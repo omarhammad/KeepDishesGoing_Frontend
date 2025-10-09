@@ -1,4 +1,4 @@
-import './App.css'
+import './App.scss'
 import {BrowserRouter, Route, Routes} from "react-router";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import axios from "axios";
@@ -16,6 +16,7 @@ import OrderTrackingPage from "./pages/OrderTrackingPage.tsx";
 import CheckoutPage from "./pages/CheckoutPage.tsx";
 import NotFoundPage from "./pages/NotFoundPage.tsx";
 import MainLayout from "./layouts/MainLayout.tsx";
+import AuthGuard from "./components/AuthGuard/AuthGuard.tsx";
 
 axios.defaults.baseURL = "http://localhost:8080";
 const queryClient = new QueryClient()
@@ -37,10 +38,10 @@ function App() {
                     {/*Auth + Owner pages*/}
                     <Route path={"/auth/login"} element={<LoginPage/>}/>
                     <Route path={"/auth/register"} element={<RegisterPage/>}/>
-                    <Route path={"/owner/restaurants/add"} element={<AddNewRestaurantPage/>}/>
-                    <Route path={"/owner/dashboard"} element={<RestaurantDashboardPage/>}/>
-                    <Route path={"/owner/dishes/add"} element={<AddNewDishPage/>}/>
-                    <Route path={"/owner/dishes/:id/edit"} element={<EditDishDraftPage/>}/>
+                    <Route path={"/owner/restaurants/add"} element={<AuthGuard><AddNewRestaurantPage/></AuthGuard>}/>
+                    <Route path={"/owner/dashboard"} element={<AuthGuard><RestaurantDashboardPage/></AuthGuard>}/>
+                    <Route path={"/owner/dishes/add"} element={<AuthGuard><AddNewDishPage/></AuthGuard>}/>
+                    <Route path={"/owner/dishes/:id/edit"} element={<AuthGuard><EditDishDraftPage/></AuthGuard>}/>
 
 
                     {/* 404 ROUTE*/}

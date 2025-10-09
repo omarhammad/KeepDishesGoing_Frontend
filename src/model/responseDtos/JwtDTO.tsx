@@ -1,6 +1,6 @@
 export  type JwtDTO = {
     accessToken: string,
-    expiresIn: string,
+    expiresIn: number,
     userId: string,
     role: string,
     username: string,

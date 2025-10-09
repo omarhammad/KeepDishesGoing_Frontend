@@ -1,7 +1,9 @@
+import AddRestaurantForm from "../components/AddRestaurantForm/AddRestaurantForm.tsx";
+
 function AddNewRestaurantPage() {
     return (
         <div>
-            AddNewRestaurantPage
+            <AddRestaurantForm/>
         </div>
     );
 }

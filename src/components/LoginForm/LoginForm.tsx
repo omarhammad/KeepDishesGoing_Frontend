@@ -1,13 +1,71 @@
-import {Box, Button, Container, TextField, Typography} from '@mui/material';
+import {Alert, Box, Button, Container, Typography} from '@mui/material';
+import {useForm} from "react-hook-form";
+import {type loginInterface, loginSchema} from "../../model/schemas/loginInterface.tsx";
+import Input from "../Input/Input.tsx";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useEffect, useState} from "react";
+import type {LoginOwnerRequest} from "../../model/requests/LoginOwnerRequest.tsx";
+import {getJwtTokenValue, getUserId, postLogin, saveJwtData} from "../../services/authService.tsx";
+import {useNavigate} from "react-router";
+import {getRestaurantByOwnerId} from "../../services/restaurantService.tsx";
 
 function LoginForm() {
 
+
+    const {
+        register,
+        handleSubmit,
+        formState: {errors}
+    } = useForm<loginInterface>({resolver: zodResolver(loginSchema)});
+    const [errorMsg, setErrorMsg] = useState<string>("");
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const tokenValue = getJwtTokenValue();
+
+        if (!tokenValue) return;
+
+        const userId = getUserId();
+
+        (async () => {
+            const restaurant = await getRestaurantByOwnerId(userId!);
+
+            if (restaurant) {
+                navigate("/owner/dashboard");
+            } else {
+                navigate("/owner/restaurants/add")
+            }
+        })();
+
+    }, [isLoggedIn, navigate]);
+
+
+    const onSubmit = async (data: loginInterface) => {
+        const loginRequest: LoginOwnerRequest = {
+            username: data.username,
+            password: data.password,
+
+        }
+        try {
+            const jwtDTO = await postLogin(loginRequest);
+            saveJwtData(jwtDTO)
+            setIsLoggedIn(true)
+        } catch (err) {
+            if (err instanceof Error) {
+                setErrorMsg(err.message)
+            }
+        }
+    }
+
     return (
         <>
-            <Container maxWidth={"sm"} sx={{mt: 8}}>
+            <Container maxWidth={"md"} sx={{mt: 8}}>
                 <Box
                     component={'form'}
+
                     noValidate
+                    onSubmit={handleSubmit(onSubmit)}
                     autoComplete={'off'}
                     sx={{
                         display: "flex",
@@ -16,12 +74,23 @@ function LoginForm() {
                         p: 4,
                         borderRadius: 2,
                         boxShadow: 4,
+                        backgroundColor: "white",
+
                     }}
                 >
                     <Typography variant="h5" textAlign="center" fontWeight="bold">Login</Typography>
-                    <TextField label={"username"} name={"username"}/>
-                    <TextField label={"password"} name={"password"}/>
-                    <Button variant="contained" color={"primary"} size={"large"}>Login</Button>
+
+                    {errorMsg && (
+                        <Alert severity="error" sx={{mb: 2}}>
+                            {errorMsg}
+                        </Alert>
+                    )}
+
+                    <Input<loginInterface> register={register} name={"username"} label={"username"}
+                                           error={errors.username}/>
+                    <Input<loginInterface> register={register} name={"password"} label={"password"}
+                                           error={errors.password} type={"password"}/>
+                    <Button type={"submit"} variant="contained" color={"primary"} size={"large"}>Login</Button>
                 </Box>
 
             </Container>

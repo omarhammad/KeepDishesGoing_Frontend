@@ -7,6 +7,12 @@
     color: rgba(255, 255, 255, 0.87);
     background-color: #242424;
 
+    background-image: url('./assets/bacground.jpg');
+    background-size: cover; /* make it fill the container */
+    background-repeat: no-repeat; /* prevent tiling */
+    background-position: center; /* center it */
+    background-attachment: fixed; /* optional: static while scrolling */
+
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -21,7 +27,4 @@ body {
     min-width: 320px;
     min-height: 100vh;
 }
-
-
-
 

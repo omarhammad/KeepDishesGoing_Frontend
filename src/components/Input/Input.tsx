@@ -1,16 +1,29 @@
 import {TextField} from "@mui/material";
-import type {FieldError, Path, UseFormRegister} from "react-hook-form";
-import type {registerInterface} from "../../model/schemas/registerInterface.tsx";
+import type {FieldError, FieldValues, Path, UseFormRegister} from "react-hook-form";
 
-interface InputProps {
-    register: UseFormRegister<registerInterface>
-    name: Path<registerInterface>,
+interface InputProps<T extends FieldValues> {
+    register: UseFormRegister<T>
+    name: Path<T>,
     label?: string
     type?: string
-    error?: FieldError
+    error?: FieldError,
+    fullWidth?: boolean
+    inputLabelPropsShrink?: boolean
+    inputPropsSteps?: number
 }
 
-function Input({register, label, name, type = "text", error}: InputProps) {
+function Input<T extends FieldValues>({
+                                          register,
+                                          label,
+                                          name,
+                                          type = "text",
+                                          error,
+                                          fullWidth,
+                                          inputLabelPropsShrink,
+                                          inputPropsSteps
+                                      }: InputProps<T>) {
+
+
     return (
         <TextField
             {...register(name)}
@@ -18,7 +31,10 @@ function Input({register, label, name, type = "text", error}: InputProps) {
             label={label ?? name}
             name={name}
             type={type}
+            fullWidth={fullWidth}
             helperText={error?.message}
+            InputLabelProps={{shrink: inputLabelPropsShrink}}
+            inputProps={{step: inputPropsSteps}}
         />
     )
 }

@@ -1,0 +1,17 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+
+}
+
+body {
+  background-image: url('./assets/bacground.jpg');
+  background-size: cover; /* make it fill the container */
+  background-repeat: no-repeat; /* prevent tiling */
+  background-position: center; /* center it */
+  background-attachment: fixed; /* optional: static while scrolling */
+
+
+}

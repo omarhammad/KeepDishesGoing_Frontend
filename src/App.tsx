@@ -4,7 +4,7 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import axios from "axios";
 import LandingPage from "./pages/LandingPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
-import Register from "./pages/Register.tsx";
+import RegisterPage from "./pages/RegisterPage.tsx";
 import RestaurantDashboardPage from "./pages/RestaurantDashboardPage.tsx";
 import AddNewRestaurantPage from "./pages/AddNewRestaurantPage.tsx";
 import AddNewDishPage from "./pages/AddNewDishPage.tsx";
@@ -36,7 +36,7 @@ function App() {
                     </Route>
                     {/*Auth + Owner pages*/}
                     <Route path={"/auth/login"} element={<LoginPage/>}/>
-                    <Route path={"/auth/register"} element={<Register/>}/>
+                    <Route path={"/auth/register"} element={<RegisterPage/>}/>
                     <Route path={"/owner/restaurants/add"} element={<AddNewRestaurantPage/>}/>
                     <Route path={"/owner/dashboard"} element={<RestaurantDashboardPage/>}/>
                     <Route path={"/owner/dishes/add"} element={<AddNewDishPage/>}/>

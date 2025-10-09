@@ -1,6 +1,8 @@
+import LoginForm from "../components/LoginForm/LoginForm.tsx";
+
 function LoginPage() {
     return (
-        <div>LoginPage</div>
+        <LoginForm/>
     )
 }
 

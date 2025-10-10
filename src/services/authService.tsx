@@ -51,13 +51,13 @@ export function getJwtTokenValue(): string | null {
 
 
         if (new Date().getTime() > accessTokenJson.expiry) {
-            removeAllTokenData()
+            clearAllTokenData()
             return null;
         }
 
         return accessTokenJson.value;
     } catch {
-        removeAllTokenData()
+        clearAllTokenData()
         return null;
     }
 }
@@ -70,7 +70,7 @@ export function getUsername(): string | null {
     return localStorage.getItem("username")
 }
 
-function removeAllTokenData() {
+export function clearAllTokenData() {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userId")
     localStorage.removeItem("username")

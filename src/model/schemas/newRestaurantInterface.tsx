@@ -11,14 +11,10 @@ export const newRestaurantSchema = z.object({
     email: z.string()
         .min(1, {message: "Email name is required"})
         .email({message: "Invalid email format"}),
-    cuisine: z.preprocess(
-        (val) => (val === undefined ? "" : String(val)),
-        z.string().min(1, "Cuisine is required")
-    ),
-    defaultPrepTime: z.preprocess(
-        (val) => (val === "" ? 0 : Number(val)),
-        z.number().min(10, {message: "Preparation time must be at least 10 minutes"})
-    ),
+    cuisine: z.string({message: "Cuisine is required"}),
+    defaultPrepTime: z.string({message: "Preparation is required"})
+        .min(1, {message: "Preparation is required"})
+        .refine(value => parseInt(value) >= 10, {message: "Preparation time must be at least 10 minutes"}),
     pictureUrl: z.string()
         .min(1, {message: "Url Picture is required"})
         .url({message: "Picture must be provided as URL"}),

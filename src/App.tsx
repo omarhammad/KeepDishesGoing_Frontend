@@ -26,22 +26,26 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <BrowserRouter>
                 <Routes>
-                    {/*Home + Public pages */}
                     <Route element={<MainLayout/>}>
+                        {/*Home + Public pages */}
+
                         <Route path={"/"} element={<LandingPage/>}/>
-                        <Route path={"/restaurants/:restaurantId/dishes/:id"} element={<DishViewPage/>}/>
                         <Route path={"/restaurants/:restaurantId"} element={<RestaurantViewPage/>}/>
+                        <Route path={"/restaurants/:restaurantId/dishes/:dishId"} element={<DishViewPage/>}/>
                         <Route path={"/basket/:basketId"} element={<BasketPage/>}/>
                         <Route path={"/basket/:basketId/checkout"} element={<CheckoutPage/>}/>
                         <Route path={"/order/:orderId/tracking"} element={<OrderTrackingPage/>}/>
+
+                        {/*Auth + Owner pages*/}
+
+                        <Route path={"/auth/login"} element={<LoginPage/>}/>
+                        <Route path={"/auth/register"} element={<RegisterPage/>}/>
+                        <Route path={"/owner/restaurants/add"}
+                               element={<AuthGuard><AddNewRestaurantPage/></AuthGuard>}/>
+                        <Route path={"/owner/dashboard"} element={<AuthGuard><RestaurantDashboardPage/></AuthGuard>}/>
+                        <Route path={"/owner/dishes/add"} element={<AuthGuard><AddNewDishPage/></AuthGuard>}/>
+                        <Route path={"/owner/dishes/:id/edit"} element={<AuthGuard><EditDishDraftPage/></AuthGuard>}/>
                     </Route>
-                    {/*Auth + Owner pages*/}
-                    <Route path={"/auth/login"} element={<LoginPage/>}/>
-                    <Route path={"/auth/register"} element={<RegisterPage/>}/>
-                    <Route path={"/owner/restaurants/add"} element={<AuthGuard><AddNewRestaurantPage/></AuthGuard>}/>
-                    <Route path={"/owner/dashboard"} element={<AuthGuard><RestaurantDashboardPage/></AuthGuard>}/>
-                    <Route path={"/owner/dishes/add"} element={<AuthGuard><AddNewDishPage/></AuthGuard>}/>
-                    <Route path={"/owner/dishes/:id/edit"} element={<AuthGuard><EditDishDraftPage/></AuthGuard>}/>
 
 
                     {/* 404 ROUTE*/}

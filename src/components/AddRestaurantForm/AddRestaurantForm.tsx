@@ -44,7 +44,6 @@ function AddRestaurantForm() {
         control,
         formState: {errors}
     } = useForm<newRestaurantInterface>({
-        // @ts-expect-error Zod preprocess typing conflict (safe to ignore)
         resolver: zodResolver(newRestaurantSchema)
     })
 
@@ -67,7 +66,7 @@ function AddRestaurantForm() {
             name: data.name,
             email: data.email,
             cuisine: data.cuisine,
-            defaultPrepTime: data.defaultPrepTime,
+            defaultPrepTime: parseInt(data.defaultPrepTime),
             resPictureUrl: data.pictureUrl,
             address: {
                 street: data.street,
@@ -109,7 +108,6 @@ function AddRestaurantForm() {
                 }}>
                 <Box
                     component={"form"}
-                    // @ts-expect-error safe: type inference mismatch, works fine at runtime
                     onSubmit={handleSubmit(onSubmit)}>
                     <Stack spacing={5}>
                         {/* Title */}

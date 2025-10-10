@@ -1,8 +1,23 @@
-import {AppBar, Box, Button, Container, TextField, Toolbar, Typography} from "@mui/material";
-import Logo from "../assets/logo.png"
+import {AppBar, Box, Button, Container, TextField, Toolbar} from "@mui/material";
+import Logo from "../assets/logo.webp"
 import {Link, Outlet} from "react-router-dom";
+import {clearAllTokenData, getJwtTokenValue} from "../services/authService.tsx";
+import {useNavigate} from "react-router";
 
 function MainLayout() {
+
+
+    const navigate = useNavigate();
+    const access_token = getJwtTokenValue();
+
+
+    const handleLogout = () => {
+        clearAllTokenData()
+        navigate("/", {replace: true})
+
+    };
+
+
     return (
         <>
             {/*Navbar*/}
@@ -16,49 +31,38 @@ function MainLayout() {
                     />
 
                     <Box sx={{flexGrow: 1, display: 'flex', justifyContent: 'center'}}>
-                        <TextField
+                        {!access_token && <TextField
                             variant={"outlined"}
                             size={"small"}
                             placeholder={"Search restaurants or dishes..."}
                             sx={{width: "50%", backgroundColor: "white", borderRadius: 1}}
-                        />
+                        />}
 
                     </Box>
 
-                    <Box>
-                        <Button color={'inherit'} component={Link} to={"/auth/login"}>Login</Button>
-                        <Button color={'inherit'} component={Link} to={"/auth/register"}>Register</Button>
+                    <Box sx={{display: "flex", gap: 1}}>
+                        {access_token ? <Button color={'inherit'} sx={{border: 1, borderColor: 'white'}}
+                                                onClick={handleLogout}>Logout</Button>
+                            : <>
+                                <Button color={'inherit'} sx={{border: 1, borderColor: 'white'}} component={Link}
+                                        to={"/auth/login"}>Login</Button>
+                                <Button color={'inherit'} sx={{border: 1, borderColor: 'white'}} component={Link}
+                                        to={"/auth/register"}>Register</Button>
+                            </>}
+
                     </Box>
                 </Toolbar>
             </AppBar>
 
-            {/*PageContent*/}
+            {/*Page content*/}
             <Container sx={{mt: 10, mb: 8}}>
                 <Outlet/>
             </Container>
 
-            {/*Footer*/}
-            <Box
 
-                component="footer"
-                sx={{
-                    backgroundColor: "primary.main",
-                    color: "white",
-                    textAlign: "center",
-                    py: 2,
-                    width: '100%',
-                    position: "fixed",
-                    bottom: 0,
-                    left: 0
-
-                }}
-            >
-                <Typography variant="body2">
-                    © 1997 Keep Dishes Going — All Rights Reserved
-                </Typography>
-            </Box>
         </>
-    );
+    )
+        ;
 }
 
 

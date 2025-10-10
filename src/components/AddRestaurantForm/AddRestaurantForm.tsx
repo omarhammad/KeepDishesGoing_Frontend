@@ -20,7 +20,7 @@ import type {CreateRestaurantRequest} from "../../model/requests/CreateRestauran
 import {getRestaurantByOwnerId, postRestaurant} from "../../services/restaurantService.tsx";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router";
-import {getUserId} from "../../services/authService.tsx";
+import {clearAllTokenData, getUserId} from "../../services/authService.tsx";
 
 
 const days = [
@@ -89,6 +89,11 @@ function AddRestaurantForm() {
 
         const response = await postRestaurant(request);
         if ("errorCode" in response) {
+            if (response.errorCode === "UNAUTHORIZED") {
+                clearAllTokenData()
+                navigate("/", {replace: true})
+            }
+
             setErrorMsg(response.errorMessage)
         } else {
             navigate("/owner/dashboard", {replace: true})

@@ -30,6 +30,7 @@ export async function postRestaurant(request: CreateRestaurantRequest) {
         return response;
     } catch (err: unknown) {
         if (axios.isAxiosError(err) && err.response) {
+            console.log(err.response.data)
             return err.response.data as ErrorResponseDTO;
         }
         return {

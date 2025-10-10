@@ -1,7 +1,7 @@
 function RestaurantDashboardPage() {
     return (
         <div>
-            RestaurantDashboardPage
+            
         </div>
     );
 }

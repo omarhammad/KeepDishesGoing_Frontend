@@ -5,9 +5,9 @@ import Input from "../Input/Input.tsx";
 import {zodResolver} from "@hookform/resolvers/zod";
 import type {RegisterOwnerRequest} from "../../model/requests/RegisterOwnerRequest.tsx";
 import {useEffect, useState} from "react";
-import {getJwtTokenValue, getUserId, postRegister, saveJwtData} from "../../services/authService.tsx";
+import {getJwtTokenValue, postRegister, saveJwtData} from "../../services/authService.tsx";
 import {useNavigate} from "react-router";
-import {getRestaurantByOwnerId} from "../../services/restaurantService.tsx";
+import {hasOwnerRestaurant} from "../../services/restaurantService.tsx";
 
 
 function RegisterForm() {
@@ -27,15 +27,23 @@ function RegisterForm() {
 
         if (!tokenValue) return;
 
-        const userId = getUserId();
 
         (async () => {
-            const restaurant = await getRestaurantByOwnerId(userId!);
 
-            if (restaurant) {
-                navigate("/owner/dashboard");
-            } else {
-                navigate("/owner/restaurants/add")
+            try {
+                const hasRestaurant = await hasOwnerRestaurant();
+                if (hasRestaurant) {
+                    navigate("/owner/dashboard");
+                } else {
+                    navigate("/owner/restaurants/add");
+
+                }
+            } catch (err) {
+                if (err instanceof Error) {
+                    setErrorMsg(err.message);
+                } else {
+                    setErrorMsg("Unexpected Error")
+                }
             }
 
         })();

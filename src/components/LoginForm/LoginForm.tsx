@@ -5,9 +5,9 @@ import Input from "../Input/Input.tsx";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useEffect, useState} from "react";
 import type {LoginOwnerRequest} from "../../model/requests/LoginOwnerRequest.tsx";
-import {getJwtTokenValue, getUserId, postLogin, saveJwtData} from "../../services/authService.tsx";
+import {getJwtTokenValue, postLogin, saveJwtData} from "../../services/authService.tsx";
 import {useNavigate} from "react-router";
-import {getRestaurantByOwnerId} from "../../services/restaurantService.tsx";
+import {hasOwnerRestaurant} from "../../services/restaurantService.tsx";
 
 function LoginForm() {
 
@@ -26,16 +26,24 @@ function LoginForm() {
 
         if (!tokenValue) return;
 
-        const userId = getUserId();
-
         (async () => {
-            const restaurant = await getRestaurantByOwnerId(userId!);
 
-            if (restaurant) {
-                navigate("/owner/dashboard");
-            } else {
-                navigate("/owner/restaurants/add")
+            try {
+                const hasRestaurant = await hasOwnerRestaurant();
+                if (hasRestaurant) {
+                    navigate("/owner/dashboard");
+                } else {
+                    navigate("/owner/restaurants/add");
+
+                }
+            } catch (err) {
+                if (err instanceof Error) {
+                    setErrorMsg(err.message);
+                } else {
+                    setErrorMsg("Unexpected Error")
+                }
             }
+
         })();
 
     }, [isLoggedIn, navigate]);
@@ -59,42 +67,51 @@ function LoginForm() {
     }
 
     return (
-        <>
-            <Container maxWidth={"md"} sx={{mt: 8}}>
-                <Box
-                    component={'form'}
+        <Container
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "60vh",
+            }}
+        >
+            <Box
+                component="form"
+                noValidate
+                onSubmit={handleSubmit(onSubmit)}
+                autoComplete="off"
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                    p: 4,
+                    borderRadius: 2,
+                    boxShadow: 4,
+                    backgroundColor: "white",
+                    width: "100%",          // ensures full width within container
+                    maxWidth: 400,          // optional, keeps form compact
+                }}
+            >
+                <Typography variant="h5" textAlign="center" fontWeight="bold">
+                    Login
+                </Typography>
 
-                    noValidate
-                    onSubmit={handleSubmit(onSubmit)}
-                    autoComplete={'off'}
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 2,
-                        p: 4,
-                        borderRadius: 2,
-                        boxShadow: 4,
-                        backgroundColor: "white",
+                {errorMsg && (
+                    <Alert severity="error" sx={{mb: 2}}>
+                        {errorMsg}
+                    </Alert>
+                )}
 
-                    }}
-                >
-                    <Typography variant="h5" textAlign="center" fontWeight="bold">Login</Typography>
+                <Input<loginInterface> register={register} name="username" label="username" error={errors.username}/>
+                <Input<loginInterface> register={register} name="password" label="password" error={errors.password}
+                                       type="password"/>
 
-                    {errorMsg && (
-                        <Alert severity="error" sx={{mb: 2}}>
-                            {errorMsg}
-                        </Alert>
-                    )}
+                <Button type="submit" variant="contained" color="primary" size="large">
+                    Login
+                </Button>
+            </Box>
+        </Container>
 
-                    <Input<loginInterface> register={register} name={"username"} label={"username"}
-                                           error={errors.username}/>
-                    <Input<loginInterface> register={register} name={"password"} label={"password"}
-                                           error={errors.password} type={"password"}/>
-                    <Button type={"submit"} variant="contained" color={"primary"} size={"large"}>Login</Button>
-                </Box>
-
-            </Container>
-        </>
     );
 
 }

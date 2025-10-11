@@ -1,5 +1,5 @@
 #root {
-  max-width: 1280px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -7,11 +7,17 @@
 }
 
 body {
-  background-image: url('./assets/bacground.jpg');
-  background-size: cover; /* make it fill the container */
-  background-repeat: no-repeat; /* prevent tiling */
-  background-position: center; /* center it */
-  background-attachment: fixed; /* optional: static while scrolling */
+
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-image: url('https://wallpaperbat.com/img/190841753-food-black-background-vector-art-icon-and-graphics-for-free-download.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
 
 
 }
+
+

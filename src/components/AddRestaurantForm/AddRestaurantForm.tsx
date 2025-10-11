@@ -17,10 +17,10 @@ import {type newRestaurantInterface, newRestaurantSchema,} from "../../model/sch
 import {zodResolver} from "@hookform/resolvers/zod";
 import Input from "../Input/Input.tsx";
 import type {CreateRestaurantRequest} from "../../model/requests/CreateRestaurantRequest.tsx";
-import {getRestaurantByOwnerId, postRestaurant} from "../../services/restaurantService.tsx";
+import {hasOwnerRestaurant, postRestaurant} from "../../services/restaurantService.tsx";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router";
-import {clearAllTokenData, getUserId} from "../../services/authService.tsx";
+import {clearAllTokenData} from "../../services/authService.tsx";
 
 
 const days = [
@@ -50,9 +50,18 @@ function AddRestaurantForm() {
     useEffect(() => {
 
         (async () => {
-            const userId = getUserId()
-            const restaurant = await getRestaurantByOwnerId(userId!);
-            if (restaurant) navigate("/owner/dashboard", {replace: true})
+
+            try {
+                const hasRestaurant = await hasOwnerRestaurant();
+                if (hasRestaurant) navigate("/owner/dashboard", {replace: true});
+
+            } catch (err) {
+                if (err instanceof Error) {
+                    setErrorMsg(err.message);
+                } else {
+                    setErrorMsg("Unknown Error");
+                }
+            }
 
         })();
 

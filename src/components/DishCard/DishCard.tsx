@@ -23,8 +23,7 @@ import type {DishWithMeta} from "../../pages/RestaurantDashboardPage.tsx";
 
 interface DishCardProps {
     dish: DishWithMeta;
-    onEdit: (id: string) => void;
-    onToggle: (id: string, field: "published" | "inStock", value: boolean) => void;
+    onEdit: () => void;
     onPreview?: (id: string) => void;
 }
 
@@ -33,9 +32,16 @@ interface Status {
     label: string;
 }
 
-export default function DishCard({dish, onEdit, onToggle, onPreview}: DishCardProps) {
+export default function DishCard({dish, onEdit, onPreview}: DishCardProps) {
     const [localPublished, setLocalPublished] = useState(!dish.isDraft || dish.hasLiveVersion);
     const [localStock, setLocalStock] = useState(dish.isInStock ?? true);
+
+
+    const onToggle = (id: string, field: "published" | "inStock", status: boolean) => {
+
+        // TODO PUBLISH/UNPUBLISH AND IN/OUT STOCK
+        console.log(id, field, status)
+    }
 
     const handleToggle = (field: "published" | "inStock") => {
         if (field === "published") {
@@ -48,6 +54,7 @@ export default function DishCard({dish, onEdit, onToggle, onPreview}: DishCardPr
             onToggle(dish.id, "inStock", next);
         }
     };
+
 
     const getDishStatus = (): Status => {
         if (dish.isDraft && dish.hasLiveVersion) return {label: "DRAFT (based on LIVE)", color: "info"};
@@ -66,7 +73,7 @@ export default function DishCard({dish, onEdit, onToggle, onPreview}: DishCardPr
             textAlign: "left",
             position: "relative"
         }}>
-            {/* Status chip */}
+
             <Chip
                 label={status.label}
                 color={status.color}
@@ -110,7 +117,7 @@ export default function DishCard({dish, onEdit, onToggle, onPreview}: DishCardPr
                             size="small"
                             variant="outlined"
                             startIcon={<EditOutlinedIcon/>}
-                            onClick={() => onEdit(dish.id)}
+                            onClick={onEdit}
                         >
                             Edit
                         </Button>

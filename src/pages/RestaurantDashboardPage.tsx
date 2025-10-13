@@ -8,6 +8,7 @@ import AddDishCard from "../components/AddDishCard/AddDishCard.tsx";
 import PublishDialog from "../components/PublishDialog/PublishDialog.tsx";
 import {useRestaurantDashboard} from "../hooks/RestaurantDashboardHooks.tsx";
 import DishCard from "../components/DishCard/DishCard.tsx";
+import type {Dish} from "../model/Dish.tsx";
 
 export type DishWithMeta = Dish & {
     isDraft?: boolean;
@@ -15,6 +16,15 @@ export type DishWithMeta = Dish & {
 };
 
 function RestaurantDashboardPage() {
+
+    // TODO
+    //  1) EDIT DISH CASE - DONE
+    //  2) ADD NEW DISH DRAFT
+    //  3) UNPUBLISH/PUBLISH ONE DISH CASE - LOOK DISH CARD
+    //  4) IN/OUT STOCK CASE - LOOK DISH CARD
+    //  5) PUBLISH ALL NOW/SCHEDULE CASE
+    //  6) DISH VIEW CASE
+
 
     const [publishOpen, setPublishOpen] = useState(false);
     const [toast, setToast] = useState<{ open: boolean; message: string; severity: "success" | "info" }>({
@@ -76,12 +86,12 @@ function RestaurantDashboardPage() {
         }
     };
 
-    const handleEditDish = (id: string) => {
-        navigate(`/owner/dishes/${id}/edit`);
+    const handleEditDish = (restaurantId: string, dishId: string) => {
+        navigate(`/owner/restaurants/${restaurantId}/dishes/${dishId}/edit`);
     };
 
-    const handleAddDish = () => {
-        navigate("/owner/dishes/add");
+    const handleAddDish = (restaurantId: string) => {
+        navigate(`/owner/restaurants/${restaurantId}/dishes/add`);
     };
 
 
@@ -90,28 +100,28 @@ function RestaurantDashboardPage() {
             sx={{
                 textAlign: "left",
                 width: "100%",
-                maxWidth: "1600px", // stretch wider
-                mx: "auto",          // center horizontally
-                px: {xs: 2, sm: 3, md: 4}, // a bit of breathing room on sides
+                maxWidth: "1600px",
+                mx: "auto",
+                px: {xs: 2, sm: 3, md: 4},
             }}
         >
             <DashboardHeader
                 name={restaurant.name}
                 imageUrl={restaurant.resPictureUrl}
-                totalDishes={drafts.length}/*TODO THE NUMBER OF DISHES DRAFTS*/
+                totalDishes={drafts.length}
                 onPublishAll={handlePublishAll}
             />
 
             <Grid container spacing={2}>
 
-                {/*TODO Fill with dishes from backend*/}
                 {visibleDishes.map((dish) => (
                     <Grid key={dish.id} item xs={12} sm={6} md={4} lg={3}>
-                        <DishCard dish={dish} onEdit={handleEditDish}/>
+                        <DishCard dish={dish} onEdit={() =>
+                            handleEditDish(restaurant.id, dish.id)}/>
                     </Grid>
                 ))}
                 <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <AddDishCard onAdd={handleAddDish}/>
+                    <AddDishCard onAdd={() => handleAddDish(restaurant.id)}/>
                 </Grid>
             </Grid>
 

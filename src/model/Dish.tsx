@@ -6,5 +6,5 @@ export type  Dish = {
     description: string,
     price: number,
     pictureUrl: string,
-    isInStock: boolean
+    isInStock?: boolean
 }

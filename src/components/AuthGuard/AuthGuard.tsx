@@ -1,4 +1,4 @@
-import {getJwtTokenValue} from "../../services/authService.tsx";
+import {clearAllTokenData, getJwtTokenValue} from "../../services/authService.tsx";
 import {useEffect} from "react";
 import {useNavigate} from "react-router";
 
@@ -15,6 +15,7 @@ function AuthGuard({children}: AuthGardProps) {
         if (tokenValue) return
 
         navigate("/auth/login", {replace: true})
+        clearAllTokenData();
 
     }, [tokenValue, navigate]);
 

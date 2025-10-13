@@ -124,7 +124,6 @@ function AddRestaurantForm() {
                     component={"form"}
                     onSubmit={handleSubmit(onSubmit)}>
                     <Stack spacing={5}>
-                        {/* Title */}
                         <Box textAlign="center">
                             <Typography variant="h5" fontWeight="bold" gutterBottom>
                                 Add New Restaurant

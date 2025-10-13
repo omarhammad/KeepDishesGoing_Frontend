@@ -32,7 +32,6 @@ export default function DashboardHeader({name, imageUrl, totalDishes, onPublishA
                 }}
             />
 
-            {/* Overlay Content */}
             <Stack
                 direction={{xs: "column", sm: "row"}}
                 spacing={2}
@@ -45,7 +44,6 @@ export default function DashboardHeader({name, imageUrl, totalDishes, onPublishA
                     justifyContent: "space-between",
                 }}
             >
-                {/* Restaurant name box */}
                 <Box
                     sx={{
                         bgcolor: "rgba(0,0,0,0.6)",
@@ -63,7 +61,6 @@ export default function DashboardHeader({name, imageUrl, totalDishes, onPublishA
                     </Typography>
                 </Box>
 
-                {/* Publish button with badge */}
                 <Badge
                     color="error"
                     badgeContent={totalDishes}

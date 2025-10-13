@@ -43,8 +43,10 @@ function App() {
                         <Route path={"/owner/restaurants/add"}
                                element={<AuthGuard><AddNewRestaurantPage/></AuthGuard>}/>
                         <Route path={"/owner/dashboard"} element={<AuthGuard><RestaurantDashboardPage/></AuthGuard>}/>
-                        <Route path={"/owner/dishes/add"} element={<AuthGuard><AddNewDishPage/></AuthGuard>}/>
-                        <Route path={"/owner/dishes/:id/edit"} element={<AuthGuard><EditDishDraftPage/></AuthGuard>}/>
+                        <Route path={"/owner/restaurants/:restaurantId/dishes/add"}
+                               element={<AuthGuard><AddNewDishPage/></AuthGuard>}/>
+                        <Route path={"/owner/restaurants/:restaurantId/dishes/:dishId/edit"}
+                               element={<AuthGuard><EditDishDraftPage/></AuthGuard>}/>
                     </Route>
 
 

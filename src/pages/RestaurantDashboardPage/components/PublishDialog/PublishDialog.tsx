@@ -19,7 +19,13 @@ interface PublishDialogProps {
 
 export default function PublishDialog({open, onClose, onConfirm}: PublishDialogProps) {
     const [mode, setMode] = useState<"now" | "schedule">("now");
-    const [time, setTime] = useState<string>("12:00");
+
+    const now = new Date();
+    const localISOTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16);
+    const [time, setTime] = useState<string>(localISOTime);
+
 
     const handleConfirm = () => {
         if (mode === "now") onConfirm("now");
@@ -43,14 +49,20 @@ export default function PublishDialog({open, onClose, onConfirm}: PublishDialogP
 
                     {mode === "schedule" && (
                         <TextField
-                            label="Select time"
-                            type="time"
+                            label="Select date & time"
+                            type="datetime-local"
                             value={time}
                             onChange={(e) => setTime(e.target.value)}
                             InputLabelProps={{shrink: true}}
-                            inputProps={{step: 300}}
+                            inputProps={{
+                                step: 300,
+                                min: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000)
+                                    .toISOString()
+                                    .slice(0, 16),
+                            }}
                             fullWidth
                         />
+
                     )}
                 </Stack>
             </DialogContent>

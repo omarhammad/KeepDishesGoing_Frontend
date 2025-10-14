@@ -18,13 +18,17 @@ import PublicIcon from "@mui/icons-material/Public";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {useState} from "react";
-import type {DishWithMeta} from "../../pages/RestaurantDashboardPage.tsx";
+import type {DishWithMeta, ToastData} from "../../RestaurantDashboardPage.tsx";
+import {useDishStockStatus, usePublishDish} from "../../../../hooks/DishesHooks.tsx";
 
 
 interface DishCardProps {
     dish: DishWithMeta;
+    restaurantId: string
     onEdit: () => void;
     onPreview?: (id: string) => void;
+    setToast: React.Dispatch<React.SetStateAction<ToastData>>;
+
 }
 
 interface Status {
@@ -32,15 +36,62 @@ interface Status {
     label: string;
 }
 
-export default function DishCard({dish, onEdit, onPreview}: DishCardProps) {
+export default function DishCard({dish, restaurantId, onEdit, onPreview, setToast}: DishCardProps) {
     const [localPublished, setLocalPublished] = useState(!dish.isDraft || dish.hasLiveVersion);
-    const [localStock, setLocalStock] = useState(dish.isInStock ?? true);
+    const [localStock, setLocalStock] = useState(dish.isInStock);
+    const {
+        isError: isErrorPublish,
+        isPending: isPendingPublish,
+        error: publishError,
+        publishDishMutation
+    } = usePublishDish();
 
 
-    const onToggle = (id: string, field: "published" | "inStock", status: boolean) => {
+    const {isError: isErrorStock, isPending: isPendingStock, error: stockError, dishStockStatusMutation}
+        = useDishStockStatus();
+
+
+    const onToggle = async (dishId: string, field: "published" | "inStock", status: boolean) => {
 
         // TODO PUBLISH/UNPUBLISH AND IN/OUT STOCK
-        console.log(id, field, status)
+
+        if (field === 'published') {
+            await publishDishMutation({restaurantId: restaurantId, dishId: dishId, isPublished: status});
+
+            if (!isPendingPublish) {
+                setToast({
+                    open: true,
+                    severity: "success",
+                    message: " Dish is " + (status ? "published" : "unpublished")
+                });
+            }
+            if (isErrorPublish) {
+                setToast({
+                    open: true,
+                    severity: "error",
+                    message: publishError?.message ?? "Unknown error during " + (status ? "publish" : "unpublish")
+                });
+            }
+        } else {
+
+            await dishStockStatusMutation({restaurantId: restaurantId, dishId: dishId, isStock: status})
+
+            if (!isPendingStock) {
+                setToast({
+                    open: true,
+                    severity: "success",
+                    message: " Dish now " + (status ? "' IN STOCK '" : "' OUT OF STOCK '")
+                });
+            }
+            if (isErrorStock) {
+                setToast({
+                    open: true,
+                    severity: "error",
+                    message: stockError?.message ?? "Unknown error during set to " + (status ? "IN STOCK" : "OUT OF STOCK")
+                });
+            }
+        }
+
     }
 
     const handleToggle = (field: "published" | "inStock") => {
@@ -54,7 +105,6 @@ export default function DishCard({dish, onEdit, onPreview}: DishCardProps) {
             onToggle(dish.id, "inStock", next);
         }
     };
-
 
     const getDishStatus = (): Status => {
         if (dish.isDraft && dish.hasLiveVersion) return {label: "DRAFT (based on LIVE)", color: "info"};
@@ -72,7 +122,8 @@ export default function DishCard({dish, onEdit, onPreview}: DishCardProps) {
             flexDirection: "column",
             textAlign: "left",
             position: "relative"
-        }}>
+        }}
+        >
 
             <Chip
                 label={status.label}
@@ -140,10 +191,10 @@ export default function DishCard({dish, onEdit, onPreview}: DishCardProps) {
                             onChange={() => handleToggle("published")}
                             sx={{
                                 "&.Mui-selected": {bgcolor: "success.main", color: "white"},
-                                fontSize: "0.75rem"
+                                fontSize: "0.6rem"
                             }}
                         >
-                            <PublicIcon fontSize="small" sx={{mr: 0.5}}/> Publish
+                            <PublicIcon fontSize="small" sx={{mr: 0.5}}/> {localPublished ? 'UnPublish' : 'Publish'}
                         </ToggleButton>
                     </Tooltip>
 
@@ -154,10 +205,11 @@ export default function DishCard({dish, onEdit, onPreview}: DishCardProps) {
                             onChange={() => handleToggle("inStock")}
                             sx={{
                                 "&.Mui-selected": {bgcolor: "primary.main", color: "white"},
-                                fontSize: "0.75rem"
+                                fontSize: "0.6rem"
                             }}
                         >
-                            <StorefrontIcon fontSize="small" sx={{mr: 0.5}}/> In stock
+                            <StorefrontIcon fontSize="small"
+                                            sx={{mr: 0.5}}/>{localStock ? 'Set Out Stock' : 'Set In stock'}
                         </ToggleButton>
                     </Tooltip>
                 </ToggleButtonGroup>

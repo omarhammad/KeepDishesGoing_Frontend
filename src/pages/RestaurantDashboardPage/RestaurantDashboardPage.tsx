@@ -1,38 +1,44 @@
 import {useEffect, useState} from "react";
 import {Alert, Box, Grid, Snackbar} from "@mui/material";
 import {useNavigate} from "react-router";
-import {getUserId} from "../services/authService.tsx";
-import {hasOwnerRestaurant} from "../services/restaurantService.tsx";
-import DashboardHeader from "../components/DashboardHeader/DashboardHeader.tsx";
-import AddDishCard from "../components/AddDishCard/AddDishCard.tsx";
-import PublishDialog from "../components/PublishDialog/PublishDialog.tsx";
-import {useRestaurantDashboard} from "../hooks/RestaurantDashboardHooks.tsx";
-import DishCard from "../components/DishCard/DishCard.tsx";
-import type {Dish} from "../model/Dish.tsx";
+import {getUserId} from "../../services/authService.tsx";
+import {hasOwnerRestaurant} from "../../services/restaurantService.tsx";
+import DashboardHeader from "./components/DashboardHeader/DashboardHeader.tsx";
+import AddDishCard from "./components/AddDishCard/AddDishCard.tsx";
+import {useRestaurantDashboard} from "../../hooks/RestaurantDashboardHooks.tsx";
+import DishCard from "./components/DishCard/DishCard.tsx";
+import type {Dish} from "../../model/Dish.tsx";
 
 export type DishWithMeta = Dish & {
     isDraft?: boolean;
     hasLiveVersion?: boolean;
 };
 
+export type ToastData = {
+    open: boolean;
+    message: string;
+    severity: "success" | "info" | "error"
+}
+
+
 function RestaurantDashboardPage() {
 
     // TODO
     //  1) EDIT DISH CASE - DONE
-    //  2) ADD NEW DISH DRAFT
-    //  3) UNPUBLISH/PUBLISH ONE DISH CASE - LOOK DISH CARD
-    //  4) IN/OUT STOCK CASE - LOOK DISH CARD
-    //  5) PUBLISH ALL NOW/SCHEDULE CASE
+    //  2) UNPUBLISH/PUBLISH ONE DISH CASE - LOOK DISH CARD -DONE
+    //  3) IN/OUT STOCK CASE - LOOK DISH CARD - DONE
+    //  4) PUBLISH ALL NOW/SCHEDULE CASE - DONE
+    //  5) ADD NEW DISH DRAFT
     //  6) DISH VIEW CASE
 
 
-    const [publishOpen, setPublishOpen] = useState(false);
-    const [toast, setToast] = useState<{ open: boolean; message: string; severity: "success" | "info" }>({
+    const [toast, setToast] = useState<ToastData>({
         open: false,
         message: "",
         severity: "success"
     });
     const navigate = useNavigate();
+
     const userId = getUserId();
 
     useEffect(() => {
@@ -72,19 +78,17 @@ function RestaurantDashboardPage() {
                 isDraft: false,
                 hasLiveVersion: false
             }))
-    ];
+    ].sort((a, b) => a.name.localeCompare(b.name));
 
+    const allScheduledTimes = visibleDishes
+        .map(d => d.scheduledTime)
+        .filter(Boolean) as string[];
 
-    const handlePublishAll = () => setPublishOpen(true);
-
-    const handleConfirmPublish = (mode: "now" | "schedule", time?: string) => {
-        setPublishOpen(false);
-        if (mode === "now") {
-            setToast({open: true, severity: "success", message: "All dishes published now."});
-        } else {
-            setToast({open: true, severity: "info", message: `All dishes scheduled for ${time}.`});
-        }
-    };
+    const nextScheduledTime = allScheduledTimes.length
+        ? new Date(
+            Math.min(...allScheduledTimes.map(t => new Date(t).getTime()))
+        ).toLocaleString()
+        : null;
 
     const handleEditDish = (restaurantId: string, dishId: string) => {
         navigate(`/owner/restaurants/${restaurantId}/dishes/${dishId}/edit`);
@@ -109,14 +113,14 @@ function RestaurantDashboardPage() {
                 name={restaurant.name}
                 imageUrl={restaurant.resPictureUrl}
                 totalDishes={drafts.length}
-                onPublishAll={handlePublishAll}
+                setToast={setToast}
+                restaurantId={restaurant.id}
+                nextScheduledTime={nextScheduledTime}
             />
-
             <Grid container spacing={2}>
-
                 {visibleDishes.map((dish) => (
                     <Grid key={dish.id} item xs={12} sm={6} md={4} lg={3}>
-                        <DishCard dish={dish} onEdit={() =>
+                        <DishCard dish={dish} restaurantId={restaurant.id} setToast={setToast} onEdit={() =>
                             handleEditDish(restaurant.id, dish.id)}/>
                     </Grid>
                 ))}
@@ -125,11 +129,6 @@ function RestaurantDashboardPage() {
                 </Grid>
             </Grid>
 
-            <PublishDialog
-                open={publishOpen}
-                onClose={() => setPublishOpen(false)}
-                onConfirm={handleConfirmPublish}
-            />
 
             <Snackbar
                 open={toast.open}

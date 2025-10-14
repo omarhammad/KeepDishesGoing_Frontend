@@ -10,6 +10,7 @@ function AuthGuard({children}: AuthGardProps) {
 
     const navigate = useNavigate();
     const tokenValue = getJwtTokenValue();
+
     useEffect(() => {
 
         if (tokenValue) return

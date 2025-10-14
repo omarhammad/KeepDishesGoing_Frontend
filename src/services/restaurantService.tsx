@@ -6,7 +6,8 @@ import {getJwtTokenValue, getUserId} from "./authService.tsx";
 import type {ErrorResponseDTO} from "../model/responseDtos/ErrorResponseDTO.tsx";
 
 export async function getRestaurantByOwnerId(ownerId: string) {
-    const {data: restaurant} = await axios.get<Restaurant>(`/api/owners/${ownerId}/restaurant`)
+    const {data: restaurant} = await axios.get<Restaurant>(`/api/owners/${ownerId}/restaurant`);
+    console.log(restaurant)
     return restaurant
 
 

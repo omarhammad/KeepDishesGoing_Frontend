@@ -7,4 +7,5 @@ export type  Dish = {
     price: number,
     pictureUrl: string,
     isInStock?: boolean
+    scheduledTime?: string
 }

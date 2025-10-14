@@ -11,5 +11,6 @@ export type Restaurant = {
     dayOpeningHours: Record<string, OpeningHours>,
     cuisine: string,
     defaultPrepTime: number,
-    owner: Owner
+    owner: Owner,
+    hasScheduledPublish?: boolean
 }

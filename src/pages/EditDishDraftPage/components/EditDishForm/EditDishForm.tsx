@@ -13,26 +13,20 @@ import {
     Stack,
     Typography
 } from "@mui/material";
-import Input from "../Input/Input.tsx";
+import Input from "../../../../components/Input/Input.tsx";
 import {Controller, useForm} from "react-hook-form";
-import {type editDishInterface, editDishSchema} from "../../model/schemas/editDishInterface.tsx";
+import {type dishInterface, DishSchema} from "../../../../model/schemas/dishInterface.tsx";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {useEffect} from "react";
-import type {Dish} from "../../model/Dish.tsx";
+import type {Dish} from "../../../../model/Dish.tsx";
+
 import {useNavigate} from "react-router";
-
-
-const dishTypes = ["STARTER", "MAIN", "DESSERT", "DRINK", "SIDE"];
-const foodTags = [
-    "LACTOSE", "GLUTEN", "VEGAN", "VEGETARIAN", "CHEESY",
-    "SPICY", "POULTRY", "GLUTEN_FREE", "SEAFOOD", "SHARING",
-    "BEEF", "GRILL"
-];
+import {dishTypes} from "../../../../model/constants/dishTypes.tsx";
+import {foodTags} from "../../../../model/constants/foodTags.tsx";
 
 
 interface EditDishFormProps {
     currentData: Dish | undefined;
-    onSubmit: (data: editDishInterface) => void;
+    onSubmit: (data: dishInterface) => void;
     isPending?: boolean;
     isError?: boolean;
     error?: Error
@@ -45,38 +39,18 @@ function EditDishForm({currentData, onSubmit, isPending, isError, error}: EditDi
         register,
         handleSubmit,
         control,
-        reset,
         formState: {errors}
-    } = useForm<editDishInterface>({
-        resolver: zodResolver(editDishSchema),
+    } = useForm<dishInterface>({
+        resolver: zodResolver(DishSchema),
         defaultValues: {
-            name: "",
-            dishType: "",
-            foodTags: [],
-            description: "",
-            price: "",
-            pictureUrl: "",
+            name: currentData.name,
+            dishType: currentData.dishType,
+            foodTags: currentData.foodTags,
+            description: currentData.description,
+            price: String(currentData.price),
+            pictureUrl: currentData.pictureUrl,
         }
     })
-
-
-    useEffect(() => {
-
-        if (currentData) {
-            console.log(currentData.dishType);
-
-            reset({
-                name: currentData.name,
-                dishType: currentData.dishType,
-                foodTags: currentData.foodTags,
-                description: currentData.description,
-                price: String(currentData.price),
-                pictureUrl: currentData.pictureUrl,
-            })
-        }
-
-    }, [currentData, reset]);
-
 
     return (
         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
@@ -104,7 +78,7 @@ function EditDishForm({currentData, onSubmit, isPending, isError, error}: EditDi
                         useFlexGap
                         flexWrap="wrap"
                     >
-                        <Input<editDishInterface>
+                        <Input<dishInterface>
                             register={register}
                             name="name"
                             label="Dish Name"
@@ -137,7 +111,7 @@ function EditDishForm({currentData, onSubmit, isPending, isError, error}: EditDi
                             name="foodTags"
                             control={control}
                             render={({field}) => (
-                                <FormControl fullWidth>
+                                <FormControl fullWidth error={!!errors.foodTags}>
                                     <InputLabel>Food Tags</InputLabel>
                                     <Select
                                         {...field}
@@ -155,6 +129,9 @@ function EditDishForm({currentData, onSubmit, isPending, isError, error}: EditDi
                                             </MenuItem>
                                         ))}
                                     </Select>
+                                    <FormHelperText>
+                                        {errors.foodTags?.message?.toString()}
+                                    </FormHelperText>
                                 </FormControl>
                             )}
                         />
@@ -168,7 +145,7 @@ function EditDishForm({currentData, onSubmit, isPending, isError, error}: EditDi
                     <Divider sx={{mb: 3}}/>
 
                     <Stack spacing={2}>
-                        <Input<editDishInterface>
+                        <Input<dishInterface>
                             register={register}
                             name="description"
                             label="Description"
@@ -177,7 +154,7 @@ function EditDishForm({currentData, onSubmit, isPending, isError, error}: EditDi
                             inputLabelPropsShrink
                         />
 
-                        <Input<editDishInterface>
+                        <Input<dishInterface>
                             register={register}
                             name="price"
                             label="Price (€)"
@@ -188,7 +165,7 @@ function EditDishForm({currentData, onSubmit, isPending, isError, error}: EditDi
                             inputLabelPropsShrink
                         />
 
-                        <Input<editDishInterface>
+                        <Input<dishInterface>
                             register={register}
                             name="pictureUrl"
                             label="Picture URL"

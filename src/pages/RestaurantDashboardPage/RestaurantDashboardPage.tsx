@@ -1,10 +1,11 @@
 import {useEffect, useState} from "react";
-import {Alert, Box, Grid, Snackbar} from "@mui/material";
 import {useNavigate} from "react-router";
 import {getUserId} from "../../services/authService.tsx";
+import {Box, Grid} from '@mui/material'
 import {hasOwnerRestaurant} from "../../services/restaurantService.tsx";
 import DashboardHeader from "./components/DashboardHeader/DashboardHeader.tsx";
 import AddDishCard from "./components/AddDishCard/AddDishCard.tsx";
+import Toast from "../../components/Toast/Toast.tsx";
 import {useRestaurantDashboard} from "../../hooks/RestaurantDashboardHooks.tsx";
 import DishCard from "./components/DishCard/DishCard.tsx";
 import type {Dish} from "../../model/Dish.tsx";
@@ -28,8 +29,9 @@ function RestaurantDashboardPage() {
     //  2) UNPUBLISH/PUBLISH ONE DISH CASE - LOOK DISH CARD -DONE
     //  3) IN/OUT STOCK CASE - LOOK DISH CARD - DONE
     //  4) PUBLISH ALL NOW/SCHEDULE CASE - DONE
-    //  5) ADD NEW DISH DRAFT
+    //  5) ADD NEW DISH DRAFT -DONE
     //  6) DISH VIEW CASE
+    //  7) MAKE THE MANUAL OPEN/CLOSE
 
 
     const [toast, setToast] = useState<ToastData>({
@@ -38,7 +40,6 @@ function RestaurantDashboardPage() {
         severity: "success"
     });
     const navigate = useNavigate();
-
     const userId = getUserId();
 
     useEffect(() => {
@@ -52,7 +53,6 @@ function RestaurantDashboardPage() {
             }
         })();
     }, [navigate]);
-
 
     const {isError, isLoading, restaurant, drafts, lives} = useRestaurantDashboard(userId!)
 
@@ -128,22 +128,8 @@ function RestaurantDashboardPage() {
                     <AddDishCard onAdd={() => handleAddDish(restaurant.id)}/>
                 </Grid>
             </Grid>
-
-
-            <Snackbar
-                open={toast.open}
-                autoHideDuration={2500}
-                onClose={() => setToast((t) => ({...t, open: false}))}
-                anchorOrigin={{vertical: "bottom", horizontal: "center"}}
-            >
-                <Alert
-                    severity={toast.severity}
-                    variant="filled"
-                    onClose={() => setToast((t) => ({...t, open: false}))}
-                >
-                    {toast.message}
-                </Alert>
-            </Snackbar>
+            <Toast open={toast.open} message={toast.message} severity={toast.severity}
+                   onClose={() => setToast(prev => ({...prev, open: false}))}/>
         </Box>
     );
 

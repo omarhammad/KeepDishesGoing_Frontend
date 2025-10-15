@@ -4,6 +4,7 @@ import {
     dishStockStatus,
     getDishById,
     getDishesOfRestaurant,
+    postNewDishDraft,
     publishAllPendingDishes,
     publishDish,
     schedulePublishForAllPendingDishes,
@@ -44,6 +45,7 @@ export function useDish(restaurantId: string, dishId: string, state: 'draft' | '
 
 }
 
+
 export function useUpdateDish() {
     const queryClient = useQueryClient();
 
@@ -76,7 +78,7 @@ export function useUpdateDish() {
 export function usePublishDish() {
     const queryClient = useQueryClient();
 
-    const {isError, isPending, error, mutateAsync: publishDishMutation} = useMutation<ResponseDTO, Error, {
+    const {isError, isPending, error, mutate: publishDishMutation} = useMutation<ResponseDTO, Error, {
         restaurantId: string,
         dishId: string,
         isPublished: boolean
@@ -102,7 +104,7 @@ export function useDishStockStatus() {
     const queryClient = useQueryClient();
 
     const {
-        isError, isPending, error, mutateAsync: dishStockStatusMutation
+        isError, isPending, error, mutate: dishStockStatusMutation
     } = useMutation<ResponseDTO, Error, {
         restaurantId: string,
         dishId: string,
@@ -167,3 +169,19 @@ export function useSchedulePublishForAllPendingDishes() {
     return {isError, isPending, error, schedulePublishForAllPendingDishesMutation};
 }
 
+export function usePostNewDishDraft() {
+    const queryClient = useQueryClient();
+    const {isError, isPending, error, mutate: postNewDishDraftMutation} = useMutation<
+        ResponseDTO,
+        Error,
+        { restaurantId: string, request: Dish }
+    >({
+        mutationFn: ({restaurantId, request}) => postNewDishDraft(restaurantId, request),
+        onSuccess: async (_data, {restaurantId}) =>
+            await Promise.all(
+                [queryClient.invalidateQueries({queryKey: ["dishes", 'draft', restaurantId]})],
+                [queryClient.invalidateQueries({queryKey: ["dishes", 'live', restaurantId]})])
+    });
+
+    return {isError, isPending, error, postNewDishDraftMutation}
+}

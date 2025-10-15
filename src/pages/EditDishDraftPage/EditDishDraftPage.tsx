@@ -1,9 +1,9 @@
-import EditDishForm from "../components/EditDishForm/EditDishForm.tsx";
-import EditDishFallBack from "../components/EditDishForm/EditDishFallBack.tsx";
-import {useDish, useUpdateDish} from "../hooks/DishesHooks.tsx";
+import EditDishForm from "./components/EditDishForm/EditDishForm.tsx";
+import EditDishFallBack from "./components/EditDishForm/EditDishFallBack.tsx";
+import {useDish, useUpdateDish} from "../../hooks/DishesHooks.tsx";
 import {useNavigate, useParams} from "react-router";
-import type {editDishInterface} from "../model/schemas/editDishInterface.tsx";
-import type {Dish} from "../model/Dish.tsx";
+import type {dishInterface} from "../../model/schemas/dishInterface.tsx";
+import type {Dish} from "../../model/Dish.tsx";
 
 function EditDishDraftPage() {
 
@@ -34,7 +34,7 @@ function EditDishDraftPage() {
         refetchDraft()
     }
 
-    const handleOnSubmit = (data: editDishInterface) => {
+    const handleOnSubmit = async (data: dishInterface) => {
         const request: Dish = {
             id: dishId!,
             name: data.name,
@@ -45,8 +45,12 @@ function EditDishDraftPage() {
             pictureUrl: data.pictureUrl
         }
 
-        updateDishMutation({restaurantId: restaurantId!, dishId: dishId!, request: request});
-        navigate('/owner/dashboard')
+        try {
+            await updateDishMutation({restaurantId: restaurantId!, dishId: dishId!, request: request});
+            navigate('/owner/dashboard')
+        } catch {
+            return
+        }
 
     };
 

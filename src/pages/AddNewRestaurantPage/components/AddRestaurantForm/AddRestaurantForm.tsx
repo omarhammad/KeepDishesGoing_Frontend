@@ -13,14 +13,14 @@ import {
     Typography,
 } from "@mui/material";
 import {Controller, useForm} from "react-hook-form";
-import {type newRestaurantInterface, newRestaurantSchema,} from "../../model/schemas/newRestaurantInterface.tsx";
+import {type newRestaurantInterface, newRestaurantSchema,} from "../../../../model/schemas/newRestaurantInterface.tsx";
 import {zodResolver} from "@hookform/resolvers/zod";
-import Input from "../Input/Input.tsx";
-import type {CreateRestaurantRequest} from "../../model/requests/CreateRestaurantRequest.tsx";
-import {hasOwnerRestaurant, postRestaurant} from "../../services/restaurantService.tsx";
+import Input from "../../../../components/Input/Input.tsx";
+import type {CreateRestaurantRequest} from "../../../../model/requests/CreateRestaurantRequest.tsx";
+import {hasOwnerRestaurant, postRestaurant} from "../../../../services/restaurantService.tsx";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router";
-import {clearAllTokenData} from "../../services/authService.tsx";
+import {clearAllTokenData} from "../../../../services/authService.tsx";
 
 
 const days = [

@@ -20,6 +20,22 @@ export async function getDishById(restaurantId: string, dishId: string, state: '
     return dish
 }
 
+export async function postNewDishDraft(restaurantId: string, request: Dish) {
+    const access_token = getJwtTokenValue();
+    const {data} = await axios.post<ResponseDTO>(`/api/restaurants/${restaurantId}/dishes`, request,
+        {
+            headers: {
+                Authorization: `Bearer ${access_token}`,
+                "Content-Type": "application/json",
+            },
+        }
+    );
+
+    return data;
+
+}
+
+
 export async function updateDishData(restaurantId: string, dishId: string, request: Dish): Promise<ResponseDTO> {
 
 
@@ -147,3 +163,5 @@ export async function schedulePublishForAllPendingDishes(restaurantId: string, s
     }
 
 }
+
+

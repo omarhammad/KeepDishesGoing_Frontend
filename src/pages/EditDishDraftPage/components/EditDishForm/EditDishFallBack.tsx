@@ -1,5 +1,5 @@
 import {Box, Button, Container, Paper, Typography} from "@mui/material";
-import {FormSkeleton} from "../FormSkeleton/FormSkeleton.tsx";
+import {FormSkeleton} from "../../../../components/FormSkeleton/FormSkeleton.tsx";
 
 
 interface EditDishFallbackProps {

@@ -7,7 +7,6 @@ import type {ErrorResponseDTO} from "../model/responseDtos/ErrorResponseDTO.tsx"
 
 export async function getRestaurantByOwnerId(ownerId: string) {
     const {data: restaurant} = await axios.get<Restaurant>(`/api/owners/${ownerId}/restaurant`);
-    console.log(restaurant)
     return restaurant
 
 
@@ -50,7 +49,6 @@ export async function hasOwnerRestaurant(): Promise<boolean> {
 
 function errorHandler(err: unknown): ErrorResponseDTO {
     if (axios.isAxiosError(err) && err.response) {
-        console.log(err.response.data)
         return err.response.data as ErrorResponseDTO;
     }
     return {

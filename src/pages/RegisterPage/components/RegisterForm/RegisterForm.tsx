@@ -1,13 +1,13 @@
 import {Alert, Box, Button, Container, Typography,} from "@mui/material";
 import {useForm} from "react-hook-form";
-import {type registerInterface, RegisterSchema} from "../../model/schemas/registerInterface.tsx";
-import Input from "../Input/Input.tsx";
+import {type registerInterface, RegisterSchema} from "../../../../model/schemas/registerInterface.tsx";
+import Input from "../../../../components/Input/Input.tsx";
 import {zodResolver} from "@hookform/resolvers/zod";
-import type {RegisterOwnerRequest} from "../../model/requests/RegisterOwnerRequest.tsx";
+import type {RegisterOwnerRequest} from "../../../../model/requests/RegisterOwnerRequest.tsx";
 import {useEffect, useState} from "react";
-import {getJwtTokenValue, postRegister, saveJwtData} from "../../services/authService.tsx";
+import {getJwtTokenValue, postRegister, saveJwtData} from "../../../../services/authService.tsx";
 import {useNavigate} from "react-router";
-import {hasOwnerRestaurant} from "../../services/restaurantService.tsx";
+import {hasOwnerRestaurant} from "../../../../services/restaurantService.tsx";
 
 
 function RegisterForm() {

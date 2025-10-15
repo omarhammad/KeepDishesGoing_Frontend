@@ -17,7 +17,7 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import PublicIcon from "@mui/icons-material/Public";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import type {DishWithMeta, ToastData} from "../../RestaurantDashboardPage.tsx";
 import {useDishStockStatus, usePublishDish} from "../../../../hooks/DishesHooks.tsx";
 
@@ -31,7 +31,7 @@ interface DishCardProps {
 
 }
 
-interface Status {
+interface Type {
     color: ChipProps["color"];
     label: string;
 }
@@ -39,57 +39,75 @@ interface Status {
 export default function DishCard({dish, restaurantId, onEdit, onPreview, setToast}: DishCardProps) {
     const [localPublished, setLocalPublished] = useState(!dish.isDraft || dish.hasLiveVersion);
     const [localStock, setLocalStock] = useState(dish.isInStock);
-    const {
-        isError: isErrorPublish,
-        isPending: isPendingPublish,
-        error: publishError,
-        publishDishMutation
-    } = usePublishDish();
+    const [hasPublishChanges, setHasPublishChanges] = useState(false)
+    const [hasStockChanges, setHasStockChanges] = useState(false)
 
+
+    const {
+        isError: isErrorPublish, isPending: isPendingPublish, error: publishError, publishDishMutation
+    } = usePublishDish();
 
     const {isError: isErrorStock, isPending: isPendingStock, error: stockError, dishStockStatusMutation}
         = useDishStockStatus();
 
 
-    const onToggle = async (dishId: string, field: "published" | "inStock", status: boolean) => {
+    useEffect(() => {
 
-        // TODO PUBLISH/UNPUBLISH AND IN/OUT STOCK
+            if (!hasPublishChanges) return
 
-        if (field === 'published') {
-            await publishDishMutation({restaurantId: restaurantId, dishId: dishId, isPublished: status});
-
-            if (!isPendingPublish) {
+            if (!isPendingPublish && !isErrorPublish && publishError == null) {
                 setToast({
                     open: true,
                     severity: "success",
-                    message: " Dish is " + (status ? "published" : "unpublished")
+                    message: " Dish is " + (localPublished ? "published" : "unpublished")
                 });
+                setHasPublishChanges(false)
             }
             if (isErrorPublish) {
                 setToast({
                     open: true,
                     severity: "error",
-                    message: publishError?.message ?? "Unknown error during " + (status ? "publish" : "unpublish")
+                    message: publishError?.message ?? "Unknown error during " + (localPublished ? "publish" : "unpublish")
                 });
+                setHasStockChanges(false)
+
             }
-        } else {
+        },
+        [isPendingPublish, isErrorPublish, setToast, publishError, localPublished, hasPublishChanges, setHasPublishChanges]);
 
-            await dishStockStatusMutation({restaurantId: restaurantId, dishId: dishId, isStock: status})
+    useEffect(() => {
 
-            if (!isPendingStock) {
+            if (!hasStockChanges) return
+
+            if (!isPendingStock && !isErrorStock && stockError == null) {
                 setToast({
                     open: true,
                     severity: "success",
-                    message: " Dish now " + (status ? "' IN STOCK '" : "' OUT OF STOCK '")
+                    message: " Dish now " + (localStock ? "' IN STOCK '" : "' OUT OF STOCK '")
                 });
+                setHasStockChanges(false)
             }
             if (isErrorStock) {
                 setToast({
                     open: true,
                     severity: "error",
-                    message: stockError?.message ?? "Unknown error during set to " + (status ? "IN STOCK" : "OUT OF STOCK")
+                    message: stockError?.message ?? "Unknown error during set to " + (localStock ? "IN STOCK" : "OUT OF STOCK")
                 });
+                setHasStockChanges(false)
+
             }
+        },
+        [isErrorStock, isPendingStock, setToast, stockError, localStock, setHasStockChanges, hasStockChanges]);
+
+
+    const onToggle = (dishId: string, field: "published" | "inStock", status: boolean) => {
+
+        if (field === 'published') {
+            publishDishMutation({restaurantId: restaurantId, dishId: dishId, isPublished: status});
+            setHasPublishChanges(true)
+        } else {
+            dishStockStatusMutation({restaurantId: restaurantId, dishId: dishId, isStock: status});
+            setHasStockChanges(true)
         }
 
     }
@@ -106,13 +124,13 @@ export default function DishCard({dish, restaurantId, onEdit, onPreview, setToas
         }
     };
 
-    const getDishStatus = (): Status => {
+    const getDishType = (): Type => {
         if (dish.isDraft && dish.hasLiveVersion) return {label: "DRAFT (based on LIVE)", color: "info"};
         if (dish.isDraft) return {label: "DRAFT", color: "warning"};
         return {label: "LIVE", color: "success"};
     };
 
-    const status = getDishStatus();
+    const type = getDishType();
 
     return (
         <Card sx={{
@@ -126,8 +144,8 @@ export default function DishCard({dish, restaurantId, onEdit, onPreview, setToas
         >
 
             <Chip
-                label={status.label}
-                color={status.color}
+                label={type.label}
+                color={type.color}
                 size="small"
                 sx={{
                     position: "absolute",

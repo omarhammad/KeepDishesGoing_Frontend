@@ -1,13 +1,13 @@
 import {Alert, Box, Button, Container, Typography} from '@mui/material';
 import {useForm} from "react-hook-form";
-import {type loginInterface, loginSchema} from "../../model/schemas/loginInterface.tsx";
-import Input from "../Input/Input.tsx";
+import {type loginInterface, loginSchema} from "../../../../model/schemas/loginInterface.tsx";
+import Input from "../../../../components/Input/Input.tsx";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useEffect, useState} from "react";
-import type {LoginOwnerRequest} from "../../model/requests/LoginOwnerRequest.tsx";
-import {getJwtTokenValue, postLogin, saveJwtData} from "../../services/authService.tsx";
+import type {LoginOwnerRequest} from "../../../../model/requests/LoginOwnerRequest.tsx";
+import {getJwtTokenValue, postLogin, saveJwtData} from "../../../../services/authService.tsx";
 import {useNavigate} from "react-router";
-import {hasOwnerRestaurant} from "../../services/restaurantService.tsx";
+import {hasOwnerRestaurant} from "../../../../services/restaurantService.tsx";
 
 function LoginForm() {
 

@@ -8,7 +8,7 @@ pictureUrl: string,
 isInStock: boolean*/
 import {z} from "zod";
 
-export const editDishSchema = z.object({
+export const DishSchema = z.object({
     name: z.string().min(1, {message: "Dish name is required"}),
     dishType: z.string()
         .min(1, {message: "Dish type is required"}),
@@ -20,10 +20,12 @@ export const editDishSchema = z.object({
         .min(1, {message: "price is required"})
         .refine(value => parseFloat(value) > 0, {message: "Price should be greater than zero"}),
     pictureUrl: z.string()
+        .min(1, {message: "Url Picture is required"})
+        .url({message: "Picture must be provided as URL"}),
 });
 
-export type editDishType = z.infer<typeof editDishSchema>;
+export type DishType = z.infer<typeof DishSchema>;
 
-export interface editDishInterface extends editDishType {
+export interface dishInterface extends DishType {
 
 }

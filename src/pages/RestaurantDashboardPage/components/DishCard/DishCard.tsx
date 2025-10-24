@@ -20,13 +20,13 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {useEffect, useState} from "react";
 import type {DishWithMeta, ToastData} from "../../RestaurantDashboardPage.tsx";
 import {useDishStockStatus, usePublishDish} from "../../../../hooks/DishesHooks.tsx";
+import {Link} from "react-router";
 
 
 interface DishCardProps {
     dish: DishWithMeta;
     restaurantId: string
     onEdit: () => void;
-    onPreview?: (id: string) => void;
     setToast: React.Dispatch<React.SetStateAction<ToastData>>;
 
 }
@@ -36,7 +36,7 @@ interface Type {
     label: string;
 }
 
-export default function DishCard({dish, restaurantId, onEdit, onPreview, setToast}: DishCardProps) {
+export default function DishCard({dish, restaurantId, onEdit, setToast}: DishCardProps) {
     const [localPublished, setLocalPublished] = useState(!dish.isDraft || dish.hasLiveVersion);
     const [localStock, setLocalStock] = useState(dish.isInStock);
     const [hasPublishChanges, setHasPublishChanges] = useState(false)
@@ -111,7 +111,6 @@ export default function DishCard({dish, restaurantId, onEdit, onPreview, setToas
         }
 
     }
-
     const handleToggle = (field: "published" | "inStock") => {
         if (field === "published") {
             const next = !localPublished;
@@ -194,9 +193,11 @@ export default function DishCard({dish, restaurantId, onEdit, onPreview, setToas
 
                     {(!dish.isDraft || dish.hasLiveVersion) && (
                         <Tooltip title="View live version">
-                            <IconButton size="small" onClick={() => onPreview?.(dish.id)}>
-                                <VisibilityOutlinedIcon/>
-                            </IconButton>
+                            <Link to={`/restaurants/${restaurantId}/dishes/${dish.id}`}>
+                                <IconButton size="small">
+                                    <VisibilityOutlinedIcon/>
+                                </IconButton>
+                            </Link>
                         </Tooltip>
                     )}
                 </Stack>

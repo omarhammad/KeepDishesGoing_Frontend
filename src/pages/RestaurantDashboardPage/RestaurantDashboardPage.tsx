@@ -9,6 +9,7 @@ import Toast from "../../components/Toast/Toast.tsx";
 import {useRestaurantDashboard} from "../../hooks/RestaurantDashboardHooks.tsx";
 import DishCard from "./components/DishCard/DishCard.tsx";
 import type {Dish} from "../../model/Dish.tsx";
+import OrdersView from "./components/OrdersView/OrdersView.tsx";
 
 export type DishWithMeta = Dish & {
     isDraft?: boolean;
@@ -30,8 +31,10 @@ function RestaurantDashboardPage() {
     //  3) IN/OUT STOCK CASE - LOOK DISH CARD - DONE
     //  4) PUBLISH ALL NOW/SCHEDULE CASE - DONE
     //  5) ADD NEW DISH DRAFT -DONE
-    //  6) DISH VIEW CASE
-    //  7) MAKE THE MANUAL OPEN/CLOSE
+    //  6) MAKE THE MANUAL OPEN/CLOSE
+    //  7) DISH VIEW CASE - DONE
+    //  8) ORDERS View
+    //  9) ORDER CARD
 
 
     const [toast, setToast] = useState<ToastData>({
@@ -119,15 +122,18 @@ function RestaurantDashboardPage() {
             />
             <Grid container spacing={2}>
                 {visibleDishes.map((dish) => (
+                    // @ts-expect-error MUI Grid type mismatch
                     <Grid key={dish.id} item xs={12} sm={6} md={4} lg={3}>
                         <DishCard dish={dish} restaurantId={restaurant.id} setToast={setToast} onEdit={() =>
                             handleEditDish(restaurant.id, dish.id)}/>
                     </Grid>
                 ))}
+                {/*@ts-expect-error MUI Grid type mismatch*/}
                 <Grid item xs={12} sm={6} md={4} lg={3}>
                     <AddDishCard onAdd={() => handleAddDish(restaurant.id)}/>
                 </Grid>
             </Grid>
+            <OrdersView restaurantId={restaurant.id}/>
             <Toast open={toast.open} message={toast.message} severity={toast.severity}
                    onClose={() => setToast(prev => ({...prev, open: false}))}/>
         </Box>

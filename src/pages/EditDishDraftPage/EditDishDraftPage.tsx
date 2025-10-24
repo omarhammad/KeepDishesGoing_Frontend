@@ -1,5 +1,5 @@
-import EditDishForm from "./components/EditDishForm/EditDishForm.tsx";
-import EditDishFallBack from "./components/EditDishForm/EditDishFallBack.tsx";
+import EditDishForm from "./components/EditDishForm.tsx";
+import EditDishFallBack from "./components/EditDishFallBack.tsx";
 import {useDish, useUpdateDish} from "../../hooks/DishesHooks.tsx";
 import {useNavigate, useParams} from "react-router";
 import type {dishInterface} from "../../model/schemas/dishInterface.tsx";

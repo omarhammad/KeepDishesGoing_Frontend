@@ -8,7 +8,7 @@ import RegisterPage from "./pages/RegisterPage/RegisterPage.tsx";
 import RestaurantDashboardPage from "./pages/RestaurantDashboardPage/RestaurantDashboardPage.tsx";
 import AddNewRestaurantPage from "./pages/AddNewRestaurantPage/AddNewRestaurantPage.tsx";
 import AddNewDishPage from "./pages/AddNewDishPage/AddNewDishPage.tsx";
-import DishViewPage from "./pages/DishViewPage.tsx";
+import DishViewPage from "./pages/DishViewPage/DishViewPage.tsx";
 import RestaurantViewPage from "./pages/RestaurantViewPage.tsx";
 import EditDishDraftPage from "./pages/EditDishDraftPage/EditDishDraftPage.tsx";
 import BasketPage from "./pages/BasketPage.tsx";

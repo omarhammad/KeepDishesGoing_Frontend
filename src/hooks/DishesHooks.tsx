@@ -30,9 +30,8 @@ export function useDishes(state: 'draft' | 'live', restaurantId?: string) {
 export function useDish(restaurantId: string, dishId: string, state: 'draft' | 'live', isEnabled: boolean) {
     const {isError, isLoading, data: dish, refetch} = useQuery<Dish>({
         queryKey: ['dish', restaurantId, dishId, state],
-        retry: 1,
         queryFn: () => getDishById(restaurantId, dishId, state),
-
+        retry: 1,
         enabled: isEnabled
     })
 
@@ -178,9 +177,10 @@ export function usePostNewDishDraft() {
     >({
         mutationFn: ({restaurantId, request}) => postNewDishDraft(restaurantId, request),
         onSuccess: async (_data, {restaurantId}) =>
-            await Promise.all(
-                [queryClient.invalidateQueries({queryKey: ["dishes", 'draft', restaurantId]})],
-                [queryClient.invalidateQueries({queryKey: ["dishes", 'live', restaurantId]})])
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: ["dishes", 'draft', restaurantId]}),
+                queryClient.invalidateQueries({queryKey: ["dishes", 'live', restaurantId]})
+            ])
     });
 
     return {isError, isPending, error, postNewDishDraftMutation}

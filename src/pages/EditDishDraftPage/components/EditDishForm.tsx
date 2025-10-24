@@ -13,15 +13,15 @@ import {
     Stack,
     Typography
 } from "@mui/material";
-import Input from "../../../../components/Input/Input.tsx";
+import Input from "../../../components/Input/Input.tsx";
 import {Controller, useForm} from "react-hook-form";
-import {type dishInterface, DishSchema} from "../../../../model/schemas/dishInterface.tsx";
+import {type dishInterface, DishSchema} from "../../../model/schemas/dishInterface.tsx";
 import {zodResolver} from "@hookform/resolvers/zod";
-import type {Dish} from "../../../../model/Dish.tsx";
+import type {Dish} from "../../../model/Dish.tsx";
 
 import {useNavigate} from "react-router";
-import {dishTypes} from "../../../../model/constants/dishTypes.tsx";
-import {foodTags} from "../../../../model/constants/foodTags.tsx";
+import {dishTypes} from "../../../model/constants/dishTypes.tsx";
+import {foodTags} from "../../../model/constants/foodTags.tsx";
 
 
 interface EditDishFormProps {

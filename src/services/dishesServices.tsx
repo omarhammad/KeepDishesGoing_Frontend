@@ -62,7 +62,6 @@ export async function updateDishData(restaurantId: string, dishId: string, reque
     }
 }
 
-
 export async function publishDish(restaurantId: string, dishId: string, isPublished: boolean): Promise<ResponseDTO> {
     const access_token = getJwtTokenValue();
     const request = {isPublished: isPublished}

@@ -1,5 +1,5 @@
-import {Box, Button, Chip, Divider, IconButton, Stack, TextField, Typography,} from "@mui/material";
-import {Add, Cancel, CheckCircle, LocalOffer, Remove, Restaurant,} from "@mui/icons-material";
+import {Box, Chip, Divider, Stack, Typography,} from "@mui/material";
+import {Cancel, CheckCircle, LocalOffer, Restaurant,} from "@mui/icons-material";
 
 import type {Dish} from "../../../model/Dish.tsx";
 
@@ -27,15 +27,15 @@ function DishView({dish}: DishViewProps) {
                     borderRadius: "20px",
                     boxShadow: "0 8px 30px rgba(0,0,0,0.1)",
                     overflow: "hidden",
-                    width: "95%",
-                    maxWidth: "1250px",
-                    minHeight: {md: "600px"},
+                    width: "70%",
+                    maxWidth: "1000px",
+                    minHeight: {md: "300px"},
                 }}
             >
                 {/* Left: Image */}
                 <Box
                     sx={{
-                        flex: {xs: "0 0 100%", md: "0 0 40%"},
+                        flex: {xs: "0 0 70%", md: "0 0 40%"},
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -71,7 +71,7 @@ function DishView({dish}: DishViewProps) {
                             variant="h3"
                             sx={{
                                 fontWeight: 800,
-                                fontSize: {xs: "1.8rem", md: "2.3rem"},
+                                fontSize: {xs: "1.5rem", md: "1.5rem"},
                                 color: "#222",
                             }}
                         >
@@ -130,7 +130,7 @@ function DishView({dish}: DishViewProps) {
                         variant="body1"
                         color="text.secondary"
                         mb={2.5}
-                        sx={{fontSize: "1.15rem", lineHeight: 1.7}}
+                        sx={{fontSize: "1rem", lineHeight: 1.7}}
                     >
                         {dish.description}
                     </Typography>
@@ -142,80 +142,12 @@ function DishView({dish}: DishViewProps) {
                         fontWeight="bold"
                         mb={3}
                         sx={{
-                            fontSize: "2.4rem",
+                            fontSize: "2rem",
                             letterSpacing: "0.5px",
                         }}
                     >
                         ${dish.price.toFixed(2)}
                     </Typography>
-
-                    {/* Quantity + Button */}
-                    <Stack direction="row" alignItems="center" spacing={2.5}>
-                        <Typography
-                            variant="h6"
-                            fontWeight={500}
-                            sx={{fontSize: "1.1rem", color: "#333"}}
-                        >
-                            Quantity:
-                        </Typography>
-                        <Box display="flex" alignItems="center">
-                            <IconButton
-                                color="primary"
-                                sx={{
-                                    border: "1px solid #ccc",
-                                    borderRadius: "8px",
-                                    width: 42,
-                                    height: 42,
-                                }}
-                            >
-                                <Remove/>
-                            </IconButton>
-                            <TextField
-                                value="1"
-                                size="small"
-                                inputProps={{
-                                    readOnly: true,
-                                    style: {
-                                        textAlign: "center",
-                                        width: "50px",
-                                        fontWeight: 600,
-                                        fontSize: "1.1rem",
-                                    },
-                                }}
-                                sx={{mx: 1}}
-                            />
-                            <IconButton
-                                color="primary"
-                                sx={{
-                                    border: "1px solid #ccc",
-                                    borderRadius: "8px",
-                                    width: 42,
-                                    height: 42,
-                                }}
-                            >
-                                <Add/>
-                            </IconButton>
-                        </Box>
-                    </Stack>
-
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        size="large"
-                        sx={{
-                            borderRadius: "12px",
-                            textTransform: "uppercase",
-                            fontWeight: 700,
-                            py: 2,
-                            fontSize: "1.15rem",
-                            mt: 4,
-                            boxShadow: "0 4px 12px rgba(8,113,53,0.4)",
-                            "&:hover": {boxShadow: "0 6px 18px rgba(8,113,53,0.5)"},
-                        }}
-                    >
-                        Add to Basket
-                    </Button>
                 </Box>
             </Box>
         </Box>

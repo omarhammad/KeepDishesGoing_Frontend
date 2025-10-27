@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router";
 import {getUserId} from "../../services/authService.tsx";
-import {Box, Grid} from '@mui/material'
+import {Grid} from '@mui/material'
 import {hasOwnerRestaurant} from "../../services/restaurantService.tsx";
 import DashboardHeader from "./components/DashboardHeader/DashboardHeader.tsx";
 import AddDishCard from "./components/AddDishCard/AddDishCard.tsx";
@@ -10,6 +10,7 @@ import {useRestaurantDashboard} from "../../hooks/RestaurantDashboardHooks.tsx";
 import DishCard from "./components/DishCard/DishCard.tsx";
 import type {Dish} from "../../model/Dish.tsx";
 import OrdersView from "./components/OrdersView/OrdersView.tsx";
+import RestaurantDashboardFallback from "./components/RestaurantDashboardFallback.tsx";
 
 export type DishWithMeta = Dish & {
     isDraft?: boolean;
@@ -24,17 +25,6 @@ export type ToastData = {
 
 
 function RestaurantDashboardPage() {
-
-    // TODO
-    //  1) EDIT DISH CASE - DONE
-    //  2) UNPUBLISH/PUBLISH ONE DISH CASE - LOOK DISH CARD -DONE
-    //  3) IN/OUT STOCK CASE - LOOK DISH CARD - DONE
-    //  4) PUBLISH ALL NOW/SCHEDULE CASE - DONE
-    //  5) ADD NEW DISH DRAFT -DONE
-    //  6) MAKE THE MANUAL OPEN/CLOSE
-    //  7) DISH VIEW CASE - DONE
-    //  8) ORDERS View
-    //  9) ORDER CARD
 
 
     const [toast, setToast] = useState<ToastData>({
@@ -57,15 +47,17 @@ function RestaurantDashboardPage() {
         })();
     }, [navigate]);
 
-    const {isError, isLoading, restaurant, drafts, lives} = useRestaurantDashboard(userId!)
+    const {
+        isError,
+        isLoading,
+        restaurantRefetch,
+        livesRefetch,
+        draftsRefetch,
+        restaurant,
+        drafts,
+        lives
+    } = useRestaurantDashboard(userId!)
 
-    if (isError || !restaurant || !drafts || !lives) {
-        return <Box>Error loading Restaurant Dashboard.</Box>;
-    }
-
-    if (isLoading) {
-        return <Box>Loading Restaurant Dashboard...</Box>;
-    }
 
     const visibleDishes: DishWithMeta[] = [
         ...drafts.map(draft => ({
@@ -101,42 +93,41 @@ function RestaurantDashboardPage() {
         navigate(`/owner/restaurants/${restaurantId}/dishes/add`);
     };
 
+    const handleOnRetry = () => {
+        restaurantRefetch()
+        livesRefetch()
+        draftsRefetch()
+    };
 
     return (
-        <Box
-            sx={{
-                textAlign: "left",
-                width: "100%",
-                maxWidth: "1600px",
-                mx: "auto",
-                px: {xs: 2, sm: 3, md: 4},
-            }}
-        >
-            <DashboardHeader
-                name={restaurant.name}
-                imageUrl={restaurant.resPictureUrl}
-                totalDishes={drafts.length}
-                setToast={setToast}
-                restaurantId={restaurant.id}
-                nextScheduledTime={nextScheduledTime}
-            />
-            <Grid container spacing={2}>
-                {visibleDishes.map((dish) => (
-                    // @ts-expect-error MUI Grid type mismatch
-                    <Grid key={dish.id} item xs={12} sm={6} md={4} lg={3}>
-                        <DishCard dish={dish} restaurantId={restaurant.id} setToast={setToast} onEdit={() =>
-                            handleEditDish(restaurant.id, dish.id)}/>
+        <RestaurantDashboardFallback isLoading={isLoading} isError={isError} onRetry={handleOnRetry}>
+            {restaurant && <>
+                <DashboardHeader
+                    name={restaurant.name}
+                    imageUrl={restaurant.resPictureUrl}
+                    totalDishes={drafts.length}
+                    setToast={setToast}
+                    restaurantId={restaurant.id}
+                    nextScheduledTime={nextScheduledTime}
+                />
+                <Grid container spacing={2}>
+                    {visibleDishes.map((dish) => (
+                        // @ts-expect-error MUI Grid type mismatch
+                        <Grid key={dish.id} item xs={12} sm={6} md={4} lg={3}>
+                            <DishCard dish={dish} restaurantId={restaurant.id} setToast={setToast} onEdit={() =>
+                                handleEditDish(restaurant.id, dish.id)}/>
+                        </Grid>
+                    ))}
+                    {/*@ts-expect-error MUI Grid type mismatch*/}
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <AddDishCard onAdd={() => handleAddDish(restaurant.id)}/>
                     </Grid>
-                ))}
-                {/*@ts-expect-error MUI Grid type mismatch*/}
-                <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <AddDishCard onAdd={() => handleAddDish(restaurant.id)}/>
                 </Grid>
-            </Grid>
-            <OrdersView restaurantId={restaurant.id}/>
-            <Toast open={toast.open} message={toast.message} severity={toast.severity}
-                   onClose={() => setToast(prev => ({...prev, open: false}))}/>
-        </Box>
+                <OrdersView restaurantId={restaurant.id}/>
+                <Toast open={toast.open} message={toast.message} severity={toast.severity}
+                       onClose={() => setToast(prev => ({...prev, open: false}))}/>
+            </>}
+        </RestaurantDashboardFallback>
     );
 
 }

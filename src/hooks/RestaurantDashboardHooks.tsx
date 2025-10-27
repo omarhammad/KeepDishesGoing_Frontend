@@ -16,11 +16,17 @@ export function useRestaurantDashboard(userId: string) {
     const drafts = draftsQuery.dishes ?? [];
     const lives = liveQuery.dishes ?? [];
 
+    const restaurantRefetch = restaurantQuery.refetch;
+    const draftsRefetch = draftsQuery.refetch;
+    const livesRefetch = liveQuery.refetch;
 
     return {
         isError,
         isLoading,
         restaurant,
+        restaurantRefetch,
+        draftsRefetch,
+        livesRefetch,
         drafts,
         lives
     }

@@ -8,7 +8,7 @@ import {
 import type {Restaurant} from "../model/Restaurant.tsx";
 
 export function useOwnerRestaurant(userId: string) {
-    const {isError, isLoading, data: restaurant} = useQuery<Restaurant>({
+    const {isError, isLoading, data: restaurant, refetch} = useQuery<Restaurant>({
         queryKey: ['restaurant', userId],
         queryFn: () => getRestaurantByOwnerId(userId),
     });
@@ -16,6 +16,7 @@ export function useOwnerRestaurant(userId: string) {
         isLoading,
         isError,
         restaurant,
+        refetch
     }
 }
 

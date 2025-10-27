@@ -1,15 +1,18 @@
 import {TextField} from "@mui/material";
 import type {FieldError, FieldValues, Path, UseFormRegister} from "react-hook-form";
+import type {ReactNode} from "react";
 
 interface InputProps<T extends FieldValues> {
-    register: UseFormRegister<T>
-    name: Path<T>,
-    label?: string
-    type?: string
-    error?: FieldError,
-    fullWidth?: boolean
-    inputLabelPropsShrink?: boolean
-    inputPropsSteps?: number
+    register: UseFormRegister<T>;
+    name: Path<T>;
+    label?: string;
+    type?: string;
+    error?: FieldError;
+    fullWidth?: boolean;
+    inputLabelPropsShrink?: boolean;
+    inputPropsSteps?: number;
+    select?: boolean;
+    children?: ReactNode;
 }
 
 function Input<T extends FieldValues>({
@@ -20,10 +23,10 @@ function Input<T extends FieldValues>({
                                           error,
                                           fullWidth,
                                           inputLabelPropsShrink,
-                                          inputPropsSteps
+                                          inputPropsSteps,
+                                          select = false,
+                                          children,
                                       }: InputProps<T>) {
-
-
     return (
         <TextField
             {...register(name)}
@@ -35,8 +38,11 @@ function Input<T extends FieldValues>({
             helperText={error?.message}
             InputLabelProps={{shrink: inputLabelPropsShrink}}
             inputProps={{step: inputPropsSteps}}
-        />
-    )
+            select={select} // 👈 this enables dropdown behavior
+        >
+            {select && children}
+        </TextField>
+    );
 }
 
-export default Input
+export default Input;

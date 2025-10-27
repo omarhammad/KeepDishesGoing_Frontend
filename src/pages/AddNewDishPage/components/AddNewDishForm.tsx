@@ -49,7 +49,7 @@ function AddNewDishForm() {
             foodTags: [],
             description: "",
             pictureUrl: "",
-            price: 0.0
+            price: "0.0"
         }
     })
 
@@ -83,6 +83,7 @@ function AddNewDishForm() {
 
     const onSubmit = (data: dishInterface) => {
         const request: Dish = {
+            id: "",
             name: data.name,
             dishType: data.dishType,
             foodTags: data.foodTags,
@@ -93,7 +94,7 @@ function AddNewDishForm() {
 
         console.log(request)
         console.log(restaurantId)
-        postNewDishDraftMutation({restaurantId: restaurantId, request: request});
+        postNewDishDraftMutation({restaurantId: restaurantId ?? "", request: request});
         setHasSaveTriggerd(true)
 
 

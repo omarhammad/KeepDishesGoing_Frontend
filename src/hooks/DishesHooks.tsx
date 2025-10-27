@@ -14,7 +14,7 @@ import type {ResponseDTO} from "../model/responseDtos/ResponseDTO.tsx";
 
 
 export function useDishes(state: 'draft' | 'live', restaurantId?: string) {
-    const {isError, isLoading, data: dishes} = useQuery<Dish[]>({
+    const {isError, isLoading, refetch, data: dishes} = useQuery<Dish[]>({
         queryKey: ["dishes", state, restaurantId],
         queryFn: () => getDishesOfRestaurant(restaurantId!, state),
         enabled: !!restaurantId
@@ -23,6 +23,7 @@ export function useDishes(state: 'draft' | 'live', restaurantId?: string) {
     return {
         isError,
         isLoading,
+        refetch,
         dishes
     }
 }

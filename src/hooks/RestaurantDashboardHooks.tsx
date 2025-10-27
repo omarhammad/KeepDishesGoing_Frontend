@@ -1,10 +1,10 @@
 import {useDishes} from "./DishesHooks.tsx";
-import useRestaurant from "./RestaurantsHooks.tsx";
+import {useOwnerRestaurant} from "./RestaurantsHooks.tsx";
 
 export function useRestaurantDashboard(userId: string) {
 
 
-    const restaurantQuery = useRestaurant(userId!);
+    const restaurantQuery = useOwnerRestaurant(userId!);
     const restaurant = restaurantQuery.restaurant;
 
     const draftsQuery = useDishes("draft", restaurant?.id);

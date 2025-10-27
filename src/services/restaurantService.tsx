@@ -5,11 +5,29 @@ import type {ResponseDTO} from "../model/responseDtos/ResponseDTO.tsx";
 import {getJwtTokenValue, getUserId} from "./authService.tsx";
 import type {ErrorResponseDTO} from "../model/responseDtos/ErrorResponseDTO.tsx";
 
+
+export async function getAllRestaurants() {
+    const {data: restaurants} = await axios.get<Restaurant[]>('/api/restaurants')
+    return restaurants;
+}
+
 export async function getRestaurantByOwnerId(ownerId: string) {
     const {data: restaurant} = await axios.get<Restaurant>(`/api/owners/${ownerId}/restaurant`);
     return restaurant
 
 
+}
+
+export async function getRestaurantById(restaurantId: string) {
+    const {data: restaurant} = await axios.get<Restaurant>(`/api/restaurants/${restaurantId}`);
+    return restaurant
+
+
+}
+
+export async function getRestaurantOpenStatus(restaurantId: string) {
+    const {data: restaurant} = await axios.get<{ openStatus: boolean }>(`/api/restaurants/${restaurantId}/open-status`);
+    return restaurant
 }
 
 export async function postRestaurant(request: CreateRestaurantRequest) {
@@ -28,7 +46,6 @@ export async function postRestaurant(request: CreateRestaurantRequest) {
     }
 
 }
-
 
 export async function hasOwnerRestaurant(): Promise<boolean> {
     const userId = getUserId();

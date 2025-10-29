@@ -108,6 +108,7 @@ function RestaurantDashboardPage() {
                     totalDishes={drafts.length}
                     setToast={setToast}
                     restaurantId={restaurant.id}
+                    currentOpenStatus={restaurant.manualOpening}
                     nextScheduledTime={nextScheduledTime}
                 />
                 <Grid container spacing={2}>

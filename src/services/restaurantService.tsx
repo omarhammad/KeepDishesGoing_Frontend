@@ -25,10 +25,6 @@ export async function getRestaurantById(restaurantId: string) {
 
 }
 
-export async function getRestaurantOpenStatus(restaurantId: string) {
-    const {data: restaurant} = await axios.get<{ openStatus: boolean }>(`/api/restaurants/${restaurantId}/open-status`);
-    return restaurant
-}
 
 export async function postRestaurant(request: CreateRestaurantRequest) {
 
@@ -46,6 +42,25 @@ export async function postRestaurant(request: CreateRestaurantRequest) {
     }
 
 }
+
+export async function getRestaurantOpenStatus(restaurantId: string) {
+    const {data: restaurant} = await axios.get<{ openStatus: boolean }>(`/api/restaurants/${restaurantId}/open-status`);
+    return restaurant
+}
+
+
+export async function updateRestaurantStatus(restaurantId: string, status: string) {
+    const access_token = getJwtTokenValue()
+    await axios.post<ResponseDTO>(`/api/restaurants/${restaurantId}/open-status`,
+        {openStatus: status},
+        {
+            headers: {
+                Authorization: `Bearer ${access_token}`,
+                "Content-Type": "application/json"
+            }
+        });
+}
+
 
 export async function hasOwnerRestaurant(): Promise<boolean> {
     const userId = getUserId();

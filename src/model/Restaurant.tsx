@@ -9,6 +9,7 @@ export type Restaurant = {
     address: Address,
     resPictureUrl: string,
     dayOpeningHours: Record<string, OpeningHours>,
+    manualOpening: string,
     cuisine: string,
     defaultPrepTime: number,
     owner: Owner,

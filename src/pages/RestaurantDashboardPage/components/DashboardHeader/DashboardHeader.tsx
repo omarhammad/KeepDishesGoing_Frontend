@@ -1,16 +1,17 @@
-import {Badge, Box, Button, Stack, Tooltip, Typography} from "@mui/material";
-import PublishIcon from "@mui/icons-material/Publish";
+import {Badge, Box, Button, Chip, FormControl, MenuItem, Select, Stack, Tooltip, Typography} from "@mui/material";
 import * as React from "react";
 import {useEffect, useState} from "react";
 import {usePublishAllPendingDishes, useSchedulePublishForAllPendingDishes} from "../../../../hooks/DishesHooks.tsx";
 import type {ToastData} from "../../RestaurantDashboardPage.tsx";
 import PublishDialog from "../PublishDialog/PublishDialog.tsx";
+import {updateRestaurantStatus} from "../../../../services/restaurantService.tsx";
 
 interface DashboardHeaderProps {
     name: string;
     imageUrl: string;
     totalDishes: number;
     restaurantId: string
+    currentOpenStatus: string
     nextScheduledTime: string | null
     setToast: React.Dispatch<React.SetStateAction<ToastData>>;
 }
@@ -19,6 +20,7 @@ export default function DashboardHeader({
                                             name,
                                             imageUrl,
                                             restaurantId,
+                                            currentOpenStatus,
                                             totalDishes,
                                             nextScheduledTime,
                                             setToast
@@ -28,6 +30,10 @@ export default function DashboardHeader({
     const [publishOpen, setPublishOpen] = useState(false);
     const [hasPublished, setHasPublished] = useState(false);
     const [scheduledAt, setScheduledAt] = useState<string>("");
+
+
+    const [openStatus, setOpenStatus] = useState<string>(currentOpenStatus.toUpperCase());
+
 
     const {
         isError: isErrorPublishAll,
@@ -102,6 +108,11 @@ export default function DashboardHeader({
         }
     };
 
+    const handleStatusChange = async (status: string) => {
+        setOpenStatus(status);
+        await updateRestaurantStatus(restaurantId, status)
+    };
+
     return (
         <Box
             sx={{
@@ -112,6 +123,7 @@ export default function DashboardHeader({
                 textAlign: "left",
             }}
         >
+            {/* Background image */}
             <Box
                 component="img"
                 src={imageUrl}
@@ -121,10 +133,10 @@ export default function DashboardHeader({
                     height: {xs: 180, sm: 240, md: 300},
                     objectFit: "cover",
                     filter: "brightness(65%)",
-                    display: "block",
                 }}
             />
 
+            {/* Overlay */}
             <Stack
                 direction={{xs: "column", sm: "row"}}
                 spacing={2}
@@ -137,13 +149,13 @@ export default function DashboardHeader({
                     justifyContent: "space-between",
                 }}
             >
+                {/* Info Section */}
                 <Box
                     sx={{
                         bgcolor: "rgba(0,0,0,0.6)",
                         px: 2,
-                        py: 1,
+                        py: 1.5,
                         borderRadius: 1,
-                        boxShadow: "0px 2px 8px rgba(0,0,0,0.4)",
                     }}
                 >
                     <Typography
@@ -164,14 +176,53 @@ export default function DashboardHeader({
                                 color: "rgba(255,255,255,0.9)",
                                 mt: 0.5,
                                 fontStyle: "italic",
-                                textShadow: "0 1px 2px rgba(0,0,0,0.5)",
                             }}
                         >
                             Next scheduled publish: {nextScheduledTime}
                         </Typography>
                     )}
+
+                    {/* Open Status */}
+                    <Stack direction="row" alignItems="center" spacing={2} mt={1.5}>
+                        <Chip
+                            label={
+                                openStatus === "OPEN"
+                                    ? "Open now"
+                                    : openStatus === "CLOSE"
+                                        ? "Closed now"
+                                        : "Auto mode"
+                            }
+                            color={
+                                openStatus === "OPEN"
+                                    ? "success"
+                                    : openStatus === "CLOSE"
+                                        ? "error"
+                                        : "info"
+                            }
+                            sx={{fontWeight: 600}}
+                        />
+
+                        <FormControl
+                            size="small"
+                            sx={{
+                                bgcolor: "white",
+                                borderRadius: 1,
+                                minWidth: 120,
+                            }}
+                        >
+                            <Select
+                                value={openStatus}
+                                onChange={(e) => handleStatusChange(e.target.value)}
+                            >
+                                <MenuItem value="OPEN">Open</MenuItem>
+                                <MenuItem value="CLOSE">Closed</MenuItem>
+                                <MenuItem value="AUTO">Auto</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Stack>
                 </Box>
 
+                {/* Publish Button */}
                 <Badge
                     color="error"
                     badgeContent={totalDishes}
@@ -196,7 +247,6 @@ export default function DashboardHeader({
                 onClick={onPublishAll}
                 variant="contained"
                 disabled={totalDishes === 0}
-                startIcon={<PublishIcon/>}
                 sx={{
                     bgcolor: "primary.main",
                     fontWeight: 600,
@@ -205,9 +255,7 @@ export default function DashboardHeader({
                         bgcolor: "primary.light",
                         color: "white",
                         opacity: 0.7,
-                        boxShadow: "0px 2px 4px rgba(0,0,0,0.2)",
                     },
-                    boxShadow: "0px 3px 6px rgba(0,0,0,0.3)",
                 }}
             >
               Publish All
@@ -224,4 +272,6 @@ export default function DashboardHeader({
             />
         </Box>
     );
+
+
 }

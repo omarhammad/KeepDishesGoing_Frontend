@@ -1,6 +1,6 @@
-import {Box, Divider, keyframes, Paper, Stack, Typography} from "@mui/material";
+import {Box, Button, Divider, keyframes, Paper, Stack, Typography} from "@mui/material";
 import {useEffect, useState} from "react";
-import {useParams} from "react-router";
+import {useNavigate, useParams} from "react-router";
 import {useOrder} from "../../hooks/OrdersHooks.tsx";
 import {LocationOn, Person} from "@mui/icons-material";
 
@@ -26,8 +26,9 @@ type OrderTimeline = {
 };
 
 export default function OrderTrackingPage() {
-    const [timeline, setTimeline] = useState<OrderTimeline[]>([]);
     const {orderId} = useParams();
+    const navigate = useNavigate();
+    const [timeline, setTimeline] = useState<OrderTimeline[]>([]);
     const {order} = useOrder(orderId!);
 
     const allStatuses = [
@@ -122,6 +123,9 @@ export default function OrderTrackingPage() {
                     bgcolor: "white",
                     color: "black",
                     boxShadow: "0 6px 20px rgba(0,0,0,0.2)",
+                    display: "flex",
+                    flexDirection: "column",
+                    minHeight: "80vh",
                 }}
             >
                 <Typography variant="h5" fontWeight={700} mb={3} textAlign="center">
@@ -260,6 +264,18 @@ export default function OrderTrackingPage() {
                         );
                     })}
                 </Stack>
+                <Box sx={{flexGrow: 1}}/> {/* spacer to push button down */}
+
+                <Button
+                    variant="contained"
+                    color="success"
+                    sx={{alignSelf: "center", mt: 3}}
+                    onClick={() => {
+                        navigate("/")
+                    }}
+                >
+                    Back to Home
+                </Button>
             </Paper>
         </Box>
     );

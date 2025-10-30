@@ -30,7 +30,7 @@ data flows between pages, hooks, and services, making debugging and future updat
 
 ---
 
-## ✅ Finished Features
+## Features
 
 - [x] Sign-In/Sign-Up pages for the restaurant owner
 - [X] In the case of a new owner , a restaurant add form shown for the owner , but if he has it will be redirected to
@@ -58,15 +58,3 @@ data flows between pages, hooks, and services, making debugging and future updat
   but if DECLINED/REJECTED customer will see a reason message
 
 ---
-
-## ❌ Unfinished Features
-
-List features that are not yet implemented.
-
-- [x] Restaurant filtering feature
-- [x] Owners can’t change the opening hours.
-- [x] A view to see the price evolution of a restaurant
-- [x] Customers can see all published dishes and not only 10
-- [x] Customers can't see the estimated delivery time.
-
-----

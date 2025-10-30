@@ -69,3 +69,4 @@ List features that are not yet implemented.
 - [x] Customers can see all published dishes and not only 10
 - [x] Customers can't see the estimated delivery time.
 
+----
